@@ -2,33 +2,59 @@
 
 A cutting-edge platform dedicated to connecting PhD holders worldwide with premium international job opportunities. Built with Next.js 14 and TypeScript, PhD-G leverages AI to empower researchers and academics in their global career journey.
 
-## Key Advantages
-- **AI-Powered Resume Optimization**: Intelligent tools to enhance resumes for global competitiveness
-- **Global Job Matching**: Curated opportunities from top universities and enterprises worldwide
-- **Multilingual Support**: Seamless Chinese/English interface for international users
-- **Fast Global Performance**: Optimized for users across regions with minimal loading times
-- **Enterprise Recruitment**: Direct access to companies seeking PhD-level talent
+## Features
 
-## Target Users
-- PhD holders seeking international academic or industry positions
-- Researchers exploring global career transitions
-- Enterprises recruiting specialized PhD talent
-- Universities and research institutions hiring faculty
-
-## Technologies
-- Next.js 14 (App Router)
-- React + TypeScript
-- MongoDB
-- AI Integration
-- Global CDN Optimization
+- **Global Job Opportunities**: Access to a wide range of PhD-level positions worldwide
+- **AI-Powered Matching**: Intelligent job recommendations based on your profile and preferences
+- **Advanced Search**: Filter jobs by location, field, salary, and more
+- **Resume Optimization**: AI tools to enhance your resume for specific positions
+- **Direct Employer Contact**: Streamlined communication with potential employers
+- **Multilingual Support**: Available in multiple languages
 
 ## Getting Started
+
 ### Prerequisites
+
 - Node.js 18+
 - npm or yarn
 
 ### Installation
+
 1. Clone the repository
    ```bash
    git clone https://github.com/AzhiChen-123019/PhD-G.git
    cd PhD-G
+   ```
+
+2. Install dependencies
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
+
+3. Run the development server
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   ```
+
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
+
+## Deployment
+
+This project is deployed on Vercel. For more information about deploying Next.js applications on Vercel, see the [Next.js deployment documentation](https://nextjs.org/docs/deployment).
+
+## Built With
+
+- [Next.js](https://nextjs.org/) - React framework
+- [TypeScript](https://www.typescriptlang.org/) - Static typing
+- [Tailwind CSS](https://tailwindcss.com/) - CSS framework
+- [MongoDB](https://www.mongodb.com/) - Database
+- [SendGrid](https://sendgrid.com/) - Email service
+- [Vercel](https://vercel.com/) - Deployment platform
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
