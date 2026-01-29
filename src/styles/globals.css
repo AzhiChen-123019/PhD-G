@@ -1,0 +1,130 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary-color: #0070f3;
+  --secondary-color: #1f2937;
+  --accent-color: #3b82f6;
+  --neutral-color: #f3f4f6;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: #f9fafb;
+  color: #111827;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* 响应式容器 */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 0.75rem;
+  }
+}
+
+.btn {
+  @apply px-4 py-2 rounded-md font-medium transition-colors;
+}
+
+.btn-primary {
+  @apply bg-primary text-white hover:bg-primary/90;
+}
+
+.btn-secondary {
+  @apply bg-secondary text-white hover:bg-secondary/90;
+}
+
+/* 响应式按钮 */
+@media (max-width: 640px) {
+  .btn {
+    @apply px-3 py-1.5 text-sm;
+  }
+}
+
+.card {
+  @apply bg-white rounded-lg shadow-md p-6;
+}
+
+/* 响应式卡片 */
+@media (max-width: 640px) {
+  .card {
+    @apply p-4;
+  }
+}
+
+.form-input {
+  @apply w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent;
+}
+
+.form-label {
+  @apply block text-sm font-medium text-gray-700 mb-1;
+}
+
+.alert-success {
+  @apply bg-green-100 text-green-700 p-4 rounded-md mb-4;
+}
+
+.alert-error {
+  @apply bg-red-100 text-red-700 p-4 rounded-md mb-4;
+}
+
+/* 响应式表格 */
+@media (max-width: 768px) {
+  table {
+    @apply text-sm;
+  }
+  
+  th,
+  td {
+    @apply px-3 py-2;
+  }
+}
+
+/* 移动端导航菜单 */
+.mobile-menu {
+  @apply fixed inset-0 bg-white z-50 transform transition-transform duration-300 ease-in-out;
+}
+
+.mobile-menu-closed {
+  @apply -translate-x-full;
+}
+
+.mobile-menu-open {
+  @apply translate-x-0;
+}
+
+/* 响应式字体大小 */
+@media (max-width: 768px) {
+  h1 {
+    @apply text-2xl;
+  }
+  
+  h2 {
+    @apply text-xl;
+  }
+  
+  h3 {
+    @apply text-lg;
+  }
+}
+
+/* 响应式间距 */
+@media (max-width: 640px) {
+  .section {
+    @apply py-8;
+  }
+  
+  .mb-6 {
+    @apply mb-4;
+  }
+  
+  .mb-4 {
+    @apply mb-3;
+  }
+}
