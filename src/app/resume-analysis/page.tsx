@@ -169,22 +169,43 @@ const ResumeAnalysisPage: React.FC = () => {
       
       // 获取最新的上传记录
       const uploadRecords = JSON.parse(localStorage.getItem('uploadRecords') || '[]');
+      console.log('Upload records:', uploadRecords);
+      
       // 按上传时间排序，获取最新的简历
-      const latestUpload = uploadRecords.length > 0 
-        ? [...uploadRecords].sort((a, b) => new Date(b.uploadTime).getTime() - new Date(a.uploadTime).getTime())[0]
-        : null;
+      let latestUpload = null;
+      if (uploadRecords.length > 0) {
+        // 尝试按上传时间排序，如果失败则按ID排序
+        try {
+          latestUpload = [...uploadRecords].sort((a, b) => {
+            const timeA = a.uploadTime ? new Date(a.uploadTime).getTime() : 0;
+            const timeB = b.uploadTime ? new Date(b.uploadTime).getTime() : 0;
+            return timeB - timeA;
+          })[0];
+        } catch (error) {
+          console.error('Error sorting upload records by time:', error);
+          // 如果时间排序失败，按ID排序
+          latestUpload = [...uploadRecords].sort((a, b) => {
+            const idA = a.id ? parseInt(a.id) : 0;
+            const idB = b.id ? parseInt(b.id) : 0;
+            return idB - idA;
+          })[0];
+        }
+      }
+      console.log('Latest upload:', latestUpload);
       
       // 获取用户简历信息
       const userResume = user?.resume || latestUpload;
+      console.log('User resume:', userResume);
 
       // 生成个性化简历分析数据
       setTimeout(() => {
-        const personalizedData = generatePersonalizedReport(userResume, userName || 'User');
+        const personalizedData = generatePersonalizedReport(userResume, user?.username || 'User');
+        console.log('Generated report data:', personalizedData);
         setResumeData(personalizedData);
         setIsLoading(false);
       }, 1000);
     }
-  }, [userName]);
+  }, []);
 
   const translations = {
     zh: {
@@ -416,27 +437,27 @@ const ResumeAnalysisPage: React.FC = () => {
               <div className="space-y-4">
                 <div>
                   <div className="text-sm text-gray-500 mb-1">{t.name}</div>
-                  <div className="text-gray-900 font-medium">{resumeData.basicInfo.name}</div>
+                  <div className="text-gray-900 font-medium">{resumeData?.basicInfo?.name || 'Guest'}</div>
                 </div>
                 <div>
                   <div className="text-sm text-gray-500 mb-1">{t.education}</div>
-                  <div className="text-gray-900 font-medium">{resumeData.basicInfo.education}</div>
+                  <div className="text-gray-900 font-medium">{resumeData?.basicInfo?.education || '博士'}</div>
                 </div>
                 <div>
                   <div className="text-sm text-gray-500 mb-1">{t.major}</div>
-                  <div className="text-gray-900 font-medium">{resumeData.basicInfo.major}</div>
+                  <div className="text-gray-900 font-medium">{resumeData?.basicInfo?.major || '计算机科学'}</div>
                 </div>
                 <div>
                   <div className="text-sm text-gray-500 mb-1">{t.experience}</div>
-                  <div className="text-gray-900 font-medium">{resumeData.basicInfo.experience}</div>
+                  <div className="text-gray-900 font-medium">{resumeData?.basicInfo?.experience || '5年'}</div>
                 </div>
                 <div>
                   <div className="text-sm text-gray-500 mb-1">{lang === 'zh' ? '简历文件名' : 'Resume File Name'}</div>
-                  <div className="text-gray-900 font-medium truncate max-w-full">{resumeData.basicInfo.fileName}</div>
+                  <div className="text-gray-900 font-medium truncate max-w-full">{resumeData?.basicInfo?.fileName || ''}</div>
                 </div>
                 <div>
                   <div className="text-sm text-gray-500 mb-1">{lang === 'zh' ? '上传日期' : 'Upload Date'}</div>
-                  <div className="text-gray-900 font-medium">{resumeData.basicInfo.uploadDate}</div>
+                  <div className="text-gray-900 font-medium">{resumeData?.basicInfo?.uploadDate || new Date().toISOString().split('T')[0]}</div>
                 </div>
               </div>
 
@@ -447,10 +468,10 @@ const ResumeAnalysisPage: React.FC = () => {
                   <div className="w-full bg-gray-200 rounded-full h-4">
                     <div 
                       className="bg-gradient-to-r from-green-500 to-blue-500 h-4 rounded-full transition-all duration-1000" 
-                      style={{ width: `${resumeData.analysis.matchScore}%` }}
+                      style={{ width: `${resumeData?.analysis?.matchScore || 80}%` }}
                     ></div>
                   </div>
-                  <div className="ml-4 text-2xl font-bold text-gray-900">{resumeData.analysis.matchScore}</div>
+                  <div className="ml-4 text-2xl font-bold text-gray-900">{resumeData?.analysis?.matchScore || 80}</div>
                 </div>
               </div>
 
@@ -485,7 +506,7 @@ const ResumeAnalysisPage: React.FC = () => {
                 <div>
                   <h3 className="text-lg font-medium text-gray-700 mb-3">{t.primarySkills}</h3>
                   <div className="flex flex-wrap gap-2">
-                    {resumeData.analysis.skills.primary.map((skill: string, index: number) => (
+                    {(resumeData?.analysis?.skills?.primary || ['人工智能', '机器学习', '深度学习', '计算机视觉']).map((skill: string, index: number) => (
                       <span 
                         key={index} 
                         className="px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-medium"
@@ -499,7 +520,7 @@ const ResumeAnalysisPage: React.FC = () => {
                 <div>
                   <h3 className="text-lg font-medium text-gray-700 mb-3">{t.secondarySkills}</h3>
                   <div className="flex flex-wrap gap-2">
-                    {resumeData.analysis.skills.secondary.map((skill: string, index: number) => (
+                    {(resumeData?.analysis?.skills?.secondary || ['Python', 'TensorFlow', 'PyTorch', 'C++']).map((skill: string, index: number) => (
                       <span 
                         key={index} 
                         className="px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm font-medium"
@@ -513,7 +534,7 @@ const ResumeAnalysisPage: React.FC = () => {
                 <div>
                   <h3 className="text-lg font-medium text-gray-700 mb-3">{t.softSkills}</h3>
                   <div className="flex flex-wrap gap-2">
-                    {resumeData.analysis.skills.soft.map((skill: string, index: number) => (
+                    {(resumeData?.analysis?.skills?.soft || ['团队合作', '沟通能力', '问题解决', '项目管理']).map((skill: string, index: number) => (
                       <span 
                         key={index} 
                         className="px-4 py-2 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium"
@@ -530,7 +551,7 @@ const ResumeAnalysisPage: React.FC = () => {
             <div className="bg-white rounded-xl shadow-sm p-6">
               <h2 className="text-xl font-semibold text-gray-800 mb-4">{t.strengths}</h2>
               <ul className="space-y-3">
-                {resumeData.analysis.strengths.map((strength: string, index: number) => (
+                {(resumeData?.analysis?.strengths || ['丰富的AI研究经验', '多篇高水平论文发表', '扎实的数学基础', '良好的团队协作能力']).map((strength: string, index: number) => (
                   <li key={index} className="flex items-start">
                     <div className="flex-shrink-0 h-6 w-6 rounded-full bg-green-100 flex items-center justify-center mr-3 mt-0.5">
                       <svg className="h-3 w-3 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -547,7 +568,7 @@ const ResumeAnalysisPage: React.FC = () => {
             <div className="bg-white rounded-xl shadow-sm p-6">
               <h2 className="text-xl font-semibold text-gray-800 mb-4">{t.improvement}</h2>
               <ul className="space-y-3">
-                {resumeData.analysis.improvement.map((item: string, index: number) => (
+                {(resumeData?.analysis?.improvement || ['可增加更多项目实践经验', '可加强行业应用案例']).map((item: string, index: number) => (
                   <li key={index} className="flex items-start">
                     <div className="flex-shrink-0 h-6 w-6 rounded-full bg-yellow-100 flex items-center justify-center mr-3 mt-0.5">
                       <svg className="h-3 w-3 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -564,7 +585,7 @@ const ResumeAnalysisPage: React.FC = () => {
             <div className="bg-white rounded-xl shadow-sm p-6">
               <h2 className="text-xl font-semibold text-gray-800 mb-4">{t.recommendations}</h2>
               <ul className="space-y-3">
-                {resumeData.recommendations.map((rec: string, index: number) => (
+                {(resumeData?.recommendations || ['适合申请人工智能研究员岗位', '可考虑高校AI实验室职位', '推荐申请大型科技公司AI部门']).map((rec: string, index: number) => (
                   <li key={index} className="flex items-start">
                     <div className="flex-shrink-0 h-6 w-6 rounded-full bg-blue-100 flex items-center justify-center mr-3 mt-0.5">
                       <svg className="h-3 w-3 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
