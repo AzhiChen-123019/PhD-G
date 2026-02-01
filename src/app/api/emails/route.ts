@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
   try {
     await dbConnect();
     
-    const { searchParams } = new URL(request.url);
+    const { searchParams } = request.nextUrl;
     const userId = searchParams.get('userId');
     const folder = searchParams.get('folder') || 'inbox';
     const limit = parseInt(searchParams.get('limit') || '20');
