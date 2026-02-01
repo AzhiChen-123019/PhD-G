@@ -162,12 +162,20 @@ export default function JobDetailPage() {
         // 从API获取岗位详情
         const response = await fetch(`/api/jobs?id=${jobId}`);
         if (!response.ok) {
+          if (response.status === 503) {
+            // 数据库连接失败，显示数据库连接错误
+            throw new Error('Database connection failed');
+          }
+          if (response.status === 404) {
+            // 岗位不存在，保持job为null
+            setJob(null);
+            return;
+          }
           throw new Error('Failed to fetch job details');
         }
         const jobData = await response.json();
-        // 由于API返回的是数组，我们需要找到匹配的岗位
-        const matchedJob = Array.isArray(jobData) ? jobData.find((j: any) => j.id === jobId) : jobData;
-        setJob(matchedJob);
+        // API现在直接返回单个岗位对象
+        setJob(jobData);
       } catch (error) {
         console.error('Error fetching job details:', error);
         setJob(null);
