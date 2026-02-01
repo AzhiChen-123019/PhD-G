@@ -5,30 +5,51 @@ import Link from 'next/link';
 import { Job } from '@/lib/job-model';
 import { ApplicationMaterialConfig } from '@/lib/admin-types';
 
-// 本地存储键名
-const APPLICATION_MATERIALS_KEY = 'applicationMaterialsConfig';
-
-// 获取所有岗位
-const getAllJobs = (): Job[] => {
-  const allJobsJson = localStorage.getItem('allJobs');
-  return allJobsJson ? JSON.parse(allJobsJson) : [];
+// 从API获取所有岗位
+const fetchJobs = async (): Promise<Job[]> => {
+  try {
+    const response = await fetch('/api/jobs');
+    if (!response.ok) {
+      throw new Error('Failed to fetch jobs');
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching jobs:', error);
+    return [];
+  }
 };
 
-// 获取所有申请材料配置
-const getAllApplicationMaterials = (): ApplicationMaterialConfig[] => {
-  const configJson = localStorage.getItem(APPLICATION_MATERIALS_KEY);
-  return configJson ? JSON.parse(configJson) : [];
+// 从API获取所有申请材料配置
+const fetchApplicationMaterials = async (): Promise<ApplicationMaterialConfig[]> => {
+  try {
+    const response = await fetch('/api/admin/application-materials');
+    if (!response.ok) {
+      throw new Error('Failed to fetch application materials');
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching application materials:', error);
+    return [];
+  }
 };
 
-// 保存申请材料配置
-const saveApplicationMaterials = (configs: ApplicationMaterialConfig[]) => {
-  localStorage.setItem(APPLICATION_MATERIALS_KEY, JSON.stringify(configs));
-};
-
-// 获取特定岗位的申请材料配置
-const getApplicationMaterialsForJob = (jobId: string): ApplicationMaterialConfig | null => {
-  const configs = getAllApplicationMaterials();
-  return configs.find(config => config.jobId === jobId) || null;
+// 保存申请材料配置到API
+const saveApplicationMaterials = async (configs: ApplicationMaterialConfig[]): Promise<boolean> => {
+  try {
+    const response = await fetch('/api/admin/application-materials', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(configs)
+    });
+    return response.ok;
+  } catch (error) {
+    console.error('Error saving application materials:', error);
+    return false;
+  }
 };
 
 export default function ApplicationMaterialsPage() {
@@ -41,10 +62,10 @@ export default function ApplicationMaterialsPage() {
 
   // 初始化数据
   useEffect(() => {
-    const fetchData = () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
-        const allJobs = getAllJobs();
+        const allJobs = await fetchJobs();
         setJobs(allJobs);
         setError(null);
       } catch (err) {
@@ -140,35 +161,25 @@ export default function ApplicationMaterialsPage() {
   };
 
   // 保存配置
-  const saveConfig = () => {
+  const saveConfig = async () => {
     if (selectedJobIds.length === 0 || !materialsConfig) return;
 
     try {
-      const allConfigs = getAllApplicationMaterials();
-      let updatedConfigs = [...allConfigs];
-
       // 为每个选中的岗位创建或更新配置
-      selectedJobIds.forEach(jobId => {
-        const configIndex = updatedConfigs.findIndex(config => config.jobId === jobId);
-        const jobConfig = {
-          ...materialsConfig,
-          id: configIndex >= 0 ? updatedConfigs[configIndex].id : `config-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-          jobId: jobId,
-          updatedAt: new Date().toISOString(),
-          createdAt: configIndex >= 0 ? updatedConfigs[configIndex].createdAt : new Date().toISOString()
-        };
+      const jobConfigs = selectedJobIds.map(jobId => ({
+        ...materialsConfig,
+        id: `config-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        jobId: jobId,
+        updatedAt: new Date().toISOString(),
+        createdAt: new Date().toISOString()
+      }));
 
-        if (configIndex >= 0) {
-          // 更新现有配置
-          updatedConfigs[configIndex] = jobConfig;
-        } else {
-          // 创建新配置
-          updatedConfigs.push(jobConfig);
-        }
-      });
-
-      saveApplicationMaterials(updatedConfigs);
-      alert(`配置已成功应用到 ${selectedJobIds.length} 个岗位！`);
+      const success = await saveApplicationMaterials(jobConfigs);
+      if (success) {
+        alert(`配置已成功应用到 ${selectedJobIds.length} 个岗位！`);
+      } else {
+        throw new Error('保存失败');
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : '保存失败');
       console.error('Error saving config:', err);
