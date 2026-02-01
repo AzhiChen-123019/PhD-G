@@ -47,14 +47,14 @@ export default function DashboardPage() {
 
         // 计算仪表盘数据
         const totalUsers = users.length;
-        const personalUsers = users.filter(user => user.userType === 'individual').length;
-        const enterpriseUsers = users.filter(user => user.userType === 'enterprise').length;
+        const personalUsers = users.filter((user: any) => user.userType === 'individual').length;
+        const enterpriseUsers = users.filter((user: any) => user.userType === 'enterprise').length;
         const totalFiles = allFiles.length;
 
         // 计算今日新增用户（根据createdAt字段计算）
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        const todayNewUsers = users.filter(user => {
+        const todayNewUsers = users.filter((user: any) => {
           const userCreatedAt = new Date(user.createdAt || 0);
           return userCreatedAt >= today;
         }).length;
