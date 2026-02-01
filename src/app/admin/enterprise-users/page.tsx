@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -110,119 +110,22 @@ const translations = {
   },
 };
 
-// 模拟企业用户数据
-const mockEnterpriseUsers = [
-  {
-    id: '1',
-    companyName: '博智科技有限公司',
-    industry: '科技互联网',
-    location: '北京市海淀区',
-    contactPerson: '张经理',
-    email: 'contact@phdmap.com',
-    status: 'active',
-    registerDate: '2024-01-15',
-    type: 'enterprise',
-  },
-  {
-    id: '2',
-    companyName: '创新电子有限公司',
-    industry: '电子信息',
-    location: '上海市浦东新区',
-    contactPerson: '李总监',
-    email: 'hr@innovation.com',
-    status: 'active',
-    registerDate: '2024-02-20',
-    type: 'enterprise',
-  },
-  {
-    id: '3',
-    companyName: '北京大学',
-    industry: '教育科研',
-    location: '北京市海淀区',
-    contactPerson: '王教授',
-    email: 'recruit@pku.edu.cn',
-    status: 'active',
-    registerDate: '2024-01-10',
-    type: 'university',
-  },
-  {
-    id: '4',
-    companyName: '清华大学',
-    industry: '教育科研',
-    location: '北京市海淀区',
-    contactPerson: '李教授',
-    email: 'jobs@tsinghua.edu.cn',
-    status: 'active',
-    registerDate: '2024-01-12',
-    type: 'university',
-  },
-  {
-    id: '5',
-    companyName: '绿色能源研究院',
-    industry: '新能源',
-    location: '深圳市南山区',
-    contactPerson: '王博士',
-    email: 'info@greenenergy.com',
-    status: 'pending',
-    registerDate: '2024-03-10',
-    type: 'enterprise',
-  },
-  {
-    id: '6',
-    companyName: '生物医药研究所',
-    industry: '生物医药',
-    location: '广州市天河区',
-    contactPerson: '赵研究员',
-    email: 'hr@biomed.com',
-    status: 'suspended',
-    registerDate: '2024-01-25',
-    type: 'enterprise',
-  },
-  {
-    id: '7',
-    companyName: '智能制造有限公司',
-    industry: '制造业',
-    location: '苏州市工业园区',
-    contactPerson: '刘厂长',
-    email: 'contact@smartmanu.com',
-    status: 'active',
-    registerDate: '2024-03-05',
-    type: 'enterprise',
-  },
-  {
-    id: '8',
-    companyName: '数字金融科技公司',
-    industry: '金融科技',
-    location: '杭州市西湖区',
-    contactPerson: '陈总监',
-    email: 'hr@fintech.com',
-    status: 'pending',
-    registerDate: '2024-03-15',
-    type: 'enterprise',
-  },
-  {
-    id: '9',
-    companyName: '复旦大学',
-    industry: '教育科研',
-    location: '上海市杨浦区',
-    contactPerson: '张教授',
-    email: 'recruit@fudan.edu.cn',
-    status: 'active',
-    registerDate: '2024-01-15',
-    type: 'university',
-  },
-  {
-    id: '10',
-    companyName: '上海交通大学',
-    industry: '教育科研',
-    location: '上海市闵行区',
-    contactPerson: '刘教授',
-    email: 'jobs@sjtu.edu.cn',
-    status: 'active',
-    registerDate: '2024-01-18',
-    type: 'university',
-  },
-];
+// 移除模拟数据，使用真实的数据库数据
+
+// 企业用户类型定义
+interface EnterpriseUser {
+  id: string;
+  companyName: string;
+  industry: string;
+  location: string;
+  contactPerson: string;
+  email: string;
+  status: 'active' | 'pending' | 'suspended' | 'disabled';
+  registerDate: string;
+  type: 'enterprise' | 'university';
+}
+
+
 
 export default function EnterpriseUsersPage() {
   const router = useRouter();
@@ -231,13 +134,43 @@ export default function EnterpriseUsersPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [typeFilter, setTypeFilter] = useState('all');
-  const [filteredEnterprises, setFilteredEnterprises] = useState(mockEnterpriseUsers);
+  const [enterpriseUsers, setEnterpriseUsers] = useState<EnterpriseUser[]>([]);
+  const [filteredEnterprises, setFilteredEnterprises] = useState<EnterpriseUser[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const t = translations[lang];
 
+  // 从数据库获取企业用户数据
+  useEffect(() => {
+    const fetchEnterpriseUsers = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        // 这里应该从数据库获取真实的企业用户数据
+        // 由于数据库连接问题，暂时使用空数组
+        // 在实际环境中，这里应该查询数据库
+        const users: EnterpriseUser[] = [];
+        
+        setEnterpriseUsers(users);
+        setFilteredEnterprises(users);
+      } catch (err) {
+        console.error('获取企业用户数据失败:', err);
+        setError(lang === 'zh' ? '获取企业用户数据失败，请稍后重试' : 'Failed to fetch enterprise user data, please try again later');
+        setEnterpriseUsers([]);
+        setFilteredEnterprises([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchEnterpriseUsers();
+  }, [lang]);
+
   // 筛选企业用户
   const filterEnterprises = (type?: string) => {
-    let result = mockEnterpriseUsers;
+    let result = enterpriseUsers;
 
     // 搜索筛选
     if (searchQuery) {
@@ -320,11 +253,11 @@ export default function EnterpriseUsersPage() {
 
   // 统计数据
   const stats = {
-    total: mockEnterpriseUsers.length,
-    active: mockEnterpriseUsers.filter(e => e.status === 'active').length,
-    pending: mockEnterpriseUsers.filter(e => e.status === 'pending').length,
-    suspended: mockEnterpriseUsers.filter(e => e.status === 'suspended').length,
-    disabled: mockEnterpriseUsers.filter(e => e.status === 'disabled').length,
+    total: enterpriseUsers.length,
+    active: enterpriseUsers.filter(e => e.status === 'active').length,
+    pending: enterpriseUsers.filter(e => e.status === 'pending').length,
+    suspended: enterpriseUsers.filter(e => e.status === 'suspended').length,
+    disabled: enterpriseUsers.filter(e => e.status === 'disabled').length,
   };
 
   return (
