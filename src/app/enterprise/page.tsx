@@ -90,412 +90,7 @@ const translations = {
   },
 };
 
-// 模拟岗位数据
-const enterpriseJobs = {
-  zh: [
-    {
-      id: 1,
-      title: '人工智能技术总监',
-      company: '腾讯科技',
-      location: '深圳',
-      salary: '年薪80-120万',
-      type: 'techDirector',
-      deadline: '2026-06-30',
-      experience: '8-10年',
-      degree: '博士',
-      skills: ['人工智能', '技术管理', '团队领导'],
-      description: '负责人工智能技术团队的管理和技术方向规划',
-      postedTime: '2026-01-20',
-      relevanceScore: 96,
-      url: 'https://example.com/job/enterprise-1',
-      source: 'enterprise',
-      viewCount: 150,
-      applyCount: 30,
-      rating: 4.9,
-      expireTime: Date.now() + 30 * 24 * 60 * 60 * 1000 // 30天后过期
-    },
-    {
-      id: 2,
-      title: '生物医药首席科学家',
-      company: '百济神州',
-      location: '北京',
-      salary: '年薪100-150万',
-      type: 'chiefScientist',
-      deadline: '2026-05-15',
-      experience: '10-15年',
-      degree: '博士',
-      skills: ['生物医药', '药物研发', '临床研究'],
-      description: '负责生物医药领域的技术研发和创新',
-      postedTime: '2026-01-18',
-      relevanceScore: 94,
-      url: 'https://example.com/job/enterprise-2',
-      source: 'enterprise',
-      viewCount: 130,
-      applyCount: 25,
-      rating: 4.8,
-      expireTime: Date.now() + 30 * 24 * 60 * 60 * 1000 // 30天后过期
-    },
-    {
-      id: 3,
-      title: 'AI Research Director',
-      company: 'Google DeepMind',
-      location: '伦敦, 英国',
-      salary: '年薪15-25万英镑',
-      type: 'techDirector',
-      deadline: '2026-07-31',
-      experience: '10-15年',
-      degree: '博士',
-      skills: ['人工智能', '深度学习', '研究管理'],
-      description: '领导DeepMind的AI研究团队，推动前沿AI技术发展',
-      postedTime: '2026-01-16',
-      relevanceScore: 98,
-      url: 'https://example.com/job/google-deepmind',
-      source: 'enterprise',
-      viewCount: 250,
-      applyCount: 50,
-      rating: 4.9,
-      expireTime: Date.now() + 30 * 24 * 60 * 60 * 1000 // 30天后过期
-    },
-    {
-      id: 4,
-      title: '机器学习工程总监',
-      company: 'Meta',
-      location: '门洛帕克, 美国',
-      salary: '年薪20-30万美元',
-      type: 'techDirector',
-      deadline: '2026-08-15',
-      experience: '8-12年',
-      degree: '博士',
-      skills: ['机器学习', '工程管理', '大规模系统'],
-      description: '负责Meta的机器学习工程团队，构建大规模AI系统',
-      postedTime: '2026-01-14',
-      relevanceScore: 97,
-      url: 'https://example.com/job/meta-ml',
-      source: 'enterprise',
-      viewCount: 220,
-      applyCount: 45,
-      rating: 4.9,
-      expireTime: Date.now() + 30 * 24 * 60 * 60 * 1000 // 30天后过期
-    },
-    {
-      id: 5,
-      title: '新能源首席科学家',
-      company: '宁德时代',
-      location: '宁德',
-      salary: '年薪120-180万',
-      type: 'chiefScientist',
-      deadline: '2026-04-30',
-      experience: '10-15年',
-      degree: '博士',
-      skills: ['新能源', '电池技术', '材料科学'],
-      description: '负责新能源领域的技术研发和创新',
-      postedTime: '2026-01-10',
-      relevanceScore: 88,
-      url: 'https://example.com/job/enterprise-5',
-      source: 'enterprise',
-      viewCount: 100,
-      applyCount: 18,
-      rating: 4.5,
-      expireTime: Date.now() + 30 * 24 * 60 * 60 * 1000 // 30天后过期
-    },
-    {
-      id: 6,
-      title: '芯片设计研发经理',
-      company: '华为技术',
-      location: '深圳',
-      salary: '年薪85-110万',
-      type: 'rManager',
-      deadline: '2026-07-30',
-      experience: '7-10年',
-      degree: '硕士及以上',
-      skills: ['芯片设计', '集成电路', '团队管理'],
-      description: '负责芯片设计团队的管理和技术研发',
-      postedTime: '2026-01-08',
-      relevanceScore: 86,
-      url: 'https://example.com/job/enterprise-6',
-      source: 'enterprise',
-      viewCount: 90,
-      applyCount: 15,
-      rating: 4.4,
-      expireTime: Date.now() + 30 * 24 * 60 * 60 * 1000 // 30天后过期
-    },
-    {
-      id: 7,
-      title: '自动驾驶技术总监',
-      company: 'Tesla',
-      location: '奥斯汀, 美国',
-      salary: '年薪25-35万美元',
-      type: 'techDirector',
-      deadline: '2026-09-30',
-      experience: '10-15年',
-      degree: '博士',
-      skills: ['自动驾驶', '计算机视觉', '机器学习'],
-      description: '负责Tesla自动驾驶技术的研发和团队管理',
-      postedTime: '2026-01-19',
-      relevanceScore: 99,
-      url: 'https://example.com/job/tesla-av',
-      source: 'enterprise',
-      viewCount: 300,
-      applyCount: 60,
-      rating: 5.0,
-      expireTime: Date.now() + 30 * 24 * 60 * 60 * 1000 // 30天后过期
-    },
-    {
-      id: 8,
-      title: '生物医药研发总监',
-      company: 'Pfizer',
-      location: '纽约, 美国',
-      salary: '年薪18-28万美元',
-      type: 'rManager',
-      deadline: '2026-07-15',
-      experience: '12-18年',
-      degree: '博士',
-      skills: ['生物医药', '药物研发', '临床试验'],
-      description: '负责Pfizer的新药研发项目管理',
-      postedTime: '2026-01-17',
-      relevanceScore: 95,
-      url: 'https://example.com/job/pfizer-rd',
-      source: 'enterprise',
-      viewCount: 180,
-      applyCount: 35,
-      rating: 4.8,
-      expireTime: Date.now() + 30 * 24 * 60 * 60 * 1000 // 30天后过期
-    },
-    {
-      id: 9,
-      title: '量子计算首席科学家',
-      company: 'IBM',
-      location: '约克敦高地, 美国',
-      salary: '年薪22-32万美元',
-      type: 'chiefScientist',
-      deadline: '2026-10-31',
-      experience: '10-15年',
-      degree: '博士',
-      skills: ['量子计算', '物理学', '计算机科学'],
-      description: '领导IBM量子计算研究团队，推动量子技术商业化',
-      postedTime: '2026-01-15',
-      relevanceScore: 97,
-      url: 'https://example.com/job/ibm-quantum',
-      source: 'enterprise',
-      viewCount: 200,
-      applyCount: 40,
-      rating: 4.9,
-      expireTime: Date.now() + 30 * 24 * 60 * 60 * 1000 // 30天后过期
-    },
-    {
-      id: 10,
-      title: '云计算研发经理',
-      company: '亚马逊AWS',
-      location: '西雅图, 美国',
-      salary: '年薪16-26万美元',
-      type: 'rManager',
-      deadline: '2026-08-30',
-      experience: '8-12年',
-      degree: '硕士及以上',
-      skills: ['云计算', '分布式系统', '技术管理'],
-      description: '负责AWS云计算服务的研发和团队管理',
-      postedTime: '2026-01-13',
-      relevanceScore: 94,
-      url: 'https://example.com/job/aws-cloud',
-      source: 'enterprise',
-      viewCount: 190,
-      applyCount: 38,
-      rating: 4.8,
-      expireTime: Date.now() + 30 * 24 * 60 * 60 * 1000 // 30天后过期
-    },
-    {
-      id: 11,
-      title: '产业研究岗',
-      company: '四川省产业技术研究院（四川省工程科技发展战略研究院）',
-      location: '成都',
-      salary: '8千-1.3万',
-      type: 'researchScientist',
-      deadline: '2026-06-30',
-      experience: '3年及以上',
-      degree: '博士',
-      skills: ['产业规划', '产业研究', '公文写作'],
-      description: '博士研究生学历；3年及以上政府机关、事业单位、国有企业工作经验，具有较强的公文写作能力，从事过产业规划、产业研究等工作经验者优先；年龄在40岁以下。',
-      postedTime: '2026-01-27',
-      relevanceScore: 92,
-      url: 'https://jobs.51job.com/chengdu/170140178.html?s=sou_sou_soulb&t=0_0&req=5314778a6fbeea0d52b4a0df278e46fc&timestamp__1258=n4Rx0DuDBi0%3DfxWqGNueeTq7qxiqxiIqwmKQx',
-      source: '51Job',
-      viewCount: 0,
-      applyCount: 0,
-      rating: 4.5,
-      expireTime: Date.now() + 30 * 24 * 60 * 60 * 1000 // 30天后过期
-    },
-  ],
-  en: [
-    {
-      id: 1,
-      title: 'AI Technical Director',
-      company: 'Google DeepMind',
-      location: 'London, UK',
-      salary: 'Annual Salary: £150,000-250,000',
-      type: 'techDirector',
-      deadline: '2026-07-31',
-      experience: '10-15 years',
-      degree: 'PhD',
-      skills: ['Artificial Intelligence', 'Deep Learning', 'Research Management'],
-      description: 'Lead DeepMind\'s AI research team, driving cutting-edge AI technology development',
-      postedTime: '2026-01-16',
-      relevanceScore: 98,
-      url: 'https://example.com/job/google-deepmind',
-      source: 'enterprise',
-      viewCount: 250,
-      applyCount: 50,
-      rating: 4.9,
-      expireTime: Date.now() + 30 * 24 * 60 * 60 * 1000 // 30 days expire
-    },
-    {
-      id: 2,
-      title: 'Machine Learning Engineering Director',
-      company: 'Meta',
-      location: 'Menlo Park, USA',
-      salary: 'Annual Salary: $200,000-300,000',
-      type: 'techDirector',
-      deadline: '2026-08-15',
-      experience: '8-12 years',
-      degree: 'PhD',
-      skills: ['Machine Learning', 'Engineering Management', 'Large-scale Systems'],
-      description: 'Lead Meta\'s machine learning engineering team, building large-scale AI systems',
-      postedTime: '2026-01-14',
-      relevanceScore: 97,
-      url: 'https://example.com/job/meta-ml',
-      source: 'enterprise',
-      viewCount: 220,
-      applyCount: 45,
-      rating: 4.9,
-      expireTime: Date.now() + 30 * 24 * 60 * 60 * 1000 // 30 days expire
-    },
-    {
-      id: 3,
-      title: 'Autonomous Driving Technical Director',
-      company: 'Tesla',
-      location: 'Austin, USA',
-      salary: 'Annual Salary: $250,000-350,000',
-      type: 'techDirector',
-      deadline: '2026-09-30',
-      experience: '10-15 years',
-      degree: 'PhD',
-      skills: ['Autonomous Driving', 'Computer Vision', 'Machine Learning'],
-      description: 'Lead Tesla\'s autonomous driving technology research and team management',
-      postedTime: '2026-01-19',
-      relevanceScore: 99,
-      url: 'https://example.com/job/tesla-av',
-      source: 'enterprise',
-      viewCount: 300,
-      applyCount: 60,
-      rating: 5.0,
-      expireTime: Date.now() + 30 * 24 * 60 * 60 * 1000 // 30 days expire
-    },
-    {
-      id: 4,
-      title: 'Biomedical R&D Director',
-      company: 'Pfizer',
-      location: 'New York, USA',
-      salary: 'Annual Salary: $180,000-280,000',
-      type: 'rManager',
-      deadline: '2026-07-15',
-      experience: '12-18 years',
-      degree: 'PhD',
-      skills: ['Biomedical Science', 'Drug Development', 'Clinical Trials'],
-      description: 'Lead Pfizer\'s new drug development project management',
-      postedTime: '2026-01-17',
-      relevanceScore: 95,
-      url: 'https://example.com/job/pfizer-rd',
-      source: 'enterprise',
-      viewCount: 180,
-      applyCount: 35,
-      rating: 4.8,
-      expireTime: Date.now() + 30 * 24 * 60 * 60 * 1000 // 30 days expire
-    },
-    {
-      id: 5,
-      title: 'Quantum Computing Chief Scientist',
-      company: 'IBM',
-      location: 'Yorktown Heights, USA',
-      salary: 'Annual Salary: $220,000-320,000',
-      type: 'chiefScientist',
-      deadline: '2026-10-31',
-      experience: '10-15 years',
-      degree: 'PhD',
-      skills: ['Quantum Computing', 'Physics', 'Computer Science'],
-      description: 'Lead IBM\'s quantum computing research team, driving quantum technology commercialization',
-      postedTime: '2026-01-15',
-      relevanceScore: 97,
-      url: 'https://example.com/job/ibm-quantum',
-      source: 'enterprise',
-      viewCount: 200,
-      applyCount: 40,
-      rating: 4.9,
-      expireTime: Date.now() + 30 * 24 * 60 * 60 * 1000 // 30 days expire
-    },
-    {
-      id: 6,
-      title: 'Cloud Computing R&D Manager',
-      company: 'Amazon AWS',
-      location: 'Seattle, USA',
-      salary: 'Annual Salary: $160,000-260,000',
-      type: 'rManager',
-      deadline: '2026-08-30',
-      experience: '8-12 years',
-      degree: 'Master or PhD',
-      skills: ['Cloud Computing', 'Distributed Systems', 'Technical Management'],
-      description: 'Lead AWS cloud computing service research and team management',
-      postedTime: '2026-01-13',
-      relevanceScore: 94,
-      url: 'https://example.com/job/aws-cloud',
-      source: 'enterprise',
-      viewCount: 190,
-      applyCount: 38,
-      rating: 4.8,
-      expireTime: Date.now() + 30 * 24 * 60 * 60 * 1000 // 30 days expire
-    },
-    {
-      id: 7,
-      title: 'AI Ethics Research Director',
-      company: 'Microsoft',
-      location: 'Redmond, USA',
-      salary: 'Annual Salary: $170,000-270,000',
-      type: 'techDirector',
-      deadline: '2026-07-30',
-      experience: '10-15 years',
-      degree: 'PhD',
-      skills: ['AI Ethics', 'Machine Learning', 'Policy Development'],
-      description: 'Lead Microsoft\'s AI ethics research, ensuring responsible AI development',
-      postedTime: '2026-01-12',
-      relevanceScore: 93,
-      url: 'https://example.com/job/microsoft-ai-ethics',
-      source: 'enterprise',
-      viewCount: 170,
-      applyCount: 32,
-      rating: 4.7,
-      expireTime: Date.now() + 30 * 24 * 60 * 60 * 1000 // 30 days expire
-    },
-    {
-      id: 8,
-      title: 'Robotics Engineering Director',
-      company: 'Boston Dynamics',
-      location: 'Waltham, USA',
-      salary: 'Annual Salary: $190,000-290,000',
-      type: 'techDirector',
-      deadline: '2026-09-15',
-      experience: '10-15 years',
-      degree: 'PhD',
-      skills: ['Robotics', 'Mechanical Engineering', 'AI Integration'],
-      description: 'Lead Boston Dynamics\' robotics engineering team, developing advanced robots',
-      postedTime: '2026-01-11',
-      relevanceScore: 96,
-      url: 'https://example.com/job/boston-dynamics-robotics',
-      source: 'enterprise',
-      viewCount: 210,
-      applyCount: 42,
-      rating: 4.9,
-      expireTime: Date.now() + 30 * 24 * 60 * 60 * 1000 // 30 days expire
-    },
-  ],
-};
+// 移除模拟数据，使用真实的岗位抓取服务
 
 export default function EnterprisePage() {
   const router = useRouter();
@@ -524,22 +119,55 @@ export default function EnterprisePage() {
   const [sortBy, setSortBy] = useState('match');
   
   // AI抓取相关状态
-  const [jobs, setJobs] = useState<EnterpriseJob[]>(enterpriseJobs[lang] as unknown as EnterpriseJob[]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [jobs, setJobs] = useState<EnterpriseJob[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [aiCallTriggered, setAiCallTriggered] = useState(false);
   const [aiAnalysisEnabled, setAiAnalysisEnabled] = useState(true);
   
-  // 初始化：将模拟数据添加到持久化存储
+  // 初始化：使用真实的岗位抓取服务
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      // 先检查是否已有持久化数据
-      const hasPersistentData = localStorage.getItem('persistent_jobs');
-      if (!hasPersistentData) {
-        // 添加模拟数据到持久化存储
-        const { addJobsToPersistentStorage } = require('@/lib/job-scraper');
-        addJobsToPersistentStorage(enterpriseJobs[lang] as unknown as EnterpriseJob[]);
+    const fetchEnterpriseJobs = async () => {
+      try {
+        setIsLoading(true);
+        
+        // 调用AI驱动的岗位抓取服务，获取企业高级岗位
+        const aiScrapeOptions: AIScrapeOptions = {
+          keywords: ['technical director', 'chief scientist', 'R&D manager', 'research director', 'senior engineer', 'CTO', 'VP of Engineering', 'engineering manager'],
+          degreeLevels: ['博士', 'PhD', 'Doctorate', '硕士', 'Master'],
+          maxResults: 25,
+          minRating: 4.0,
+          maxDuration: 12000,
+          platforms: ['LinkedIn', 'Glassdoor', 'Indeed', '51Job', '智联招聘', '猎聘'],
+          useAI: true,
+          analysisDepth: 'comprehensive',
+          includeSalaryAnalysis: true,
+          includeSkillsAnalysis: true,
+          includeCompanyAnalysis: true
+        };
+
+        const scrapedJobs = await intelligentJobScrape(aiScrapeOptions);
+        
+        // 将抓取的岗位转换为企业岗位格式
+        const formattedJobs = scrapedJobs.map(job => ({
+          ...job,
+          type: job.title.toLowerCase().includes('总监') ? 'techDirector' : 
+                job.title.toLowerCase().includes('首席') ? 'chiefScientist' : 
+                job.title.toLowerCase().includes('经理') ? 'rManager' : 
+                'techDirector',
+          deadline: job.deadline || (job.expireTime ? new Date(job.expireTime).toISOString().split('T')[0] : '')
+        })) as unknown as EnterpriseJob[];
+        
+        setJobs(formattedJobs);
+      } catch (error) {
+        console.error('获取企业岗位数据失败:', error);
+        // 如果抓取失败，使用空数组
+        setJobs([]);
+      } finally {
+        setIsLoading(false);
       }
-    }
+    };
+    
+    fetchEnterpriseJobs();
   }, [lang]);
   
   // 检查是否需要触发AI抓取
