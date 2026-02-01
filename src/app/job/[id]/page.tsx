@@ -79,396 +79,15 @@ const translations = {
   },
 };
 
-// 模拟岗位数据
-const mockJobs = {
-  zh: {
-    '1': {
-      id: '1',
-      title: '人工智能助理教授',
-      institution: '北京大学',
-      location: '北京',
-      salary: '年薪40-60万',
-      type: 'university',
-      deadline: '2026-06-30',
-      description: '北京大学计算机科学技术研究所诚聘人工智能方向助理教授，负责本科生和研究生教学工作，开展人工智能领域的前沿研究，发表高水平学术论文，申请科研项目，指导研究生。',
-      responsibilities: [
-        '承担本科生和研究生的人工智能相关课程教学',
-        '开展人工智能领域的前沿研究，发表高水平学术论文',
-        '申请国家级和省部级科研项目',
-        '指导研究生开展科研工作',
-        '参与学科建设和学术交流活动',
-      ],
-      requirements: [
-        '计算机科学、人工智能或相关领域博士学位',
-        '在人工智能领域有高水平学术成果',
-        '具有良好的教学能力和团队合作精神',
-        '能够独立开展科研工作并指导研究生',
-      ],
-      skills: ['人工智能', '机器学习', '深度学习', '计算机视觉', '自然语言处理'],
-      // 材料要求配置
-      attachmentRequirements: {
-        chinese: ['resume'],
-        foreign: ['resume', 'degree-certificate', 'research-plan', 'publications', 'reference-letters', 'work-permit']
-      },
-    },
-    '2': {
-      id: '2',
-      title: '高级机器学习工程师',
-      company: '腾讯科技',
-      location: '深圳',
-      salary: '年薪60-80万',
-      type: 'enterprise',
-      deadline: '2026-05-15',
-      description: '腾讯科技人工智能实验室诚聘高级机器学习工程师，负责大规模机器学习模型的研发和部署，参与核心AI技术的创新和应用，推动AI技术在腾讯产品中的落地。',
-      responsibilities: [
-        '设计和实现大规模机器学习模型',
-        '优化模型性能和部署效率',
-        '参与AI技术的创新研究',
-        '与产品团队合作，推动AI技术在产品中的应用',
-        '跟踪和研究最新的机器学习技术',
-      ],
-      requirements: [
-        '计算机科学、人工智能或相关领域硕士及以上学位',
-        '3年以上机器学习相关工作经验',
-        '精通Python、TensorFlow或PyTorch等深度学习框架',
-        '有大规模机器学习系统研发经验',
-        '良好的团队合作和沟通能力',
-      ],
-      skills: ['机器学习', '深度学习', 'Python', 'TensorFlow', 'PyTorch', '分布式计算'],
-      // 材料要求配置
-      attachmentRequirements: {
-        chinese: ['resume'],
-        foreign: ['resume', 'degree-certificate', 'research-plan', 'publications', 'reference-letters', 'work-permit']
-      },
-    },
-    '4': {
-      id: '4',
-      title: '数据科学家',
-      company: '阿里巴巴集团',
-      location: '杭州',
-      salary: '年薪50-70万',
-      type: 'enterprise',
-      deadline: '2026-06-30',
-      description: '阿里巴巴集团诚聘数据科学家，负责大数据分析和机器学习模型的开发，参与业务决策支持和产品优化，推动数据驱动的业务创新。',
-      responsibilities: [
-        '设计和实现数据分析和机器学习模型',
-        '从海量数据中提取有价值的信息和洞察',
-        '与业务团队合作，支持业务决策',
-        '参与产品优化和业务创新',
-        '跟踪和研究最新的数据分析技术',
-      ],
-      requirements: [
-        '计算机科学、统计学、数学或相关领域硕士及以上学位',
-        '3年以上数据分析或机器学习相关工作经验',
-        '精通Python、SQL等数据分析工具',
-        '有大规模数据分析经验',
-        '良好的团队合作和沟通能力',
-      ],
-      skills: ['数据分析', '机器学习', 'Python', 'SQL', '统计学', '数据可视化'],
-      // 材料要求配置
-      attachmentRequirements: {
-        chinese: ['resume'],
-        foreign: ['resume', 'degree-certificate', 'research-plan', 'publications', 'reference-letters', 'work-permit']
-      },
-    },
-    '5': {
-      id: '5',
-      title: '算法工程师',
-      company: '百度',
-      location: '北京',
-      salary: '年薪55-75万',
-      type: 'enterprise',
-      deadline: '2026-06-15',
-      description: '百度诚聘算法工程师，负责搜索、推荐等核心业务的算法研发和优化，参与算法系统的设计和实现，推动算法性能的持续提升。',
-      responsibilities: [
-        '设计和实现搜索、推荐等核心算法',
-        '优化算法性能和用户体验',
-        '参与算法系统的设计和架构',
-        '与产品团队合作，推动算法在产品中的应用',
-        '跟踪和研究最新的算法技术',
-      ],
-      requirements: [
-        '计算机科学或相关领域硕士及以上学位',
-        '3年以上算法研发相关工作经验',
-        '精通C++、Python等编程语言',
-        '有搜索、推荐等相关算法经验',
-        '良好的团队合作和沟通能力',
-      ],
-      skills: ['算法设计', 'C++', 'Python', '搜索算法', '推荐系统', '机器学习'],
-      // 材料要求配置
-      attachmentRequirements: {
-        chinese: ['resume'],
-        foreign: ['resume', 'degree-certificate', 'research-plan', 'publications', 'reference-letters', 'work-permit']
-      },
-    },
-    '6': {
-      id: '6',
-      title: '人工智能研究员',
-      institution: '清华大学',
-      location: '北京',
-      salary: '年薪45-65万',
-      type: 'university',
-      deadline: '2026-07-31',
-      description: '清华大学人工智能研究院诚聘人工智能研究员，负责人工智能领域的前沿研究，发表高水平学术论文，申请科研项目，指导研究生开展科研工作。',
-      responsibilities: [
-        '开展人工智能领域的前沿研究',
-        '发表高水平学术论文',
-        '申请国家级和省部级科研项目',
-        '指导研究生开展科研工作',
-        '参与学科建设和学术交流活动',
-      ],
-      requirements: [
-        '计算机科学、人工智能或相关领域博士学位',
-        '在人工智能领域有高水平学术成果',
-        '具有良好的科研能力和团队合作精神',
-        '能够独立开展科研工作并指导研究生',
-      ],
-      skills: ['人工智能', '机器学习', '深度学习', '计算机视觉', '自然语言处理', '强化学习'],
-      // 材料要求配置
-      attachmentRequirements: {
-        chinese: ['resume'],
-        foreign: ['resume', 'degree-certificate', 'research-plan', 'publications', 'reference-letters', 'work-permit']
-      },
-    },
-    '11': {
-      id: '11',
-      title: '产业研究岗',
-      company: '四川省产业技术研究院（四川省工程科技发展战略研究院）',
-      location: '成都',
-      salary: '8千-1.3万',
-      type: 'enterprise',
-      deadline: '2026-06-30',
-      description: '四川省产业技术研究院（四川省工程科技发展战略研究院）是四川省科技厅直属的公益二类事业单位。主要开展产业技术分析预测、发展战略等研究；承担产业技术成果（项目）挖掘发现、评估评价、落地转化、企业孵化和培育等服务；承担全省重大工程科技战略规划咨询、成果转化、人才培养、学术交流等工作；负责院士日常联络和服务保障。',
-      responsibilities: [
-        '开展产业技术分析预测和发展战略研究',
-        '承担产业技术成果的挖掘发现、评估评价工作',
-        '参与产业技术成果的落地转化和企业孵化培育',
-        '承担全省重大工程科技战略规划咨询',
-        '参与成果转化、人才培养和学术交流活动',
-        '负责产业研究相关公文的撰写',
-      ],
-      requirements: [
-        '博士研究生学历',
-        '3年及以上政府机关、事业单位、国有企业工作经验',
-        '具有较强的公文写作能力',
-        '从事过产业规划、产业研究等工作经验者优先',
-        '年龄在40岁以下',
-      ],
-      skills: ['产业规划', '产业研究', '公文写作', '战略分析', '项目评估'],
-      // 材料要求配置
-      attachmentRequirements: {
-        chinese: ['resume'],
-        foreign: ['resume', 'degree-certificate', 'work-permit']
-      },
-    },
-  },
-  en: {
-    '1': {
-      id: '1',
-      title: 'Assistant Professor of Artificial Intelligence',
-      institution: 'Peking University',
-      location: 'Beijing',
-      salary: 'Annual Salary: $60,000-90,000',
-      type: 'university',
-      deadline: '2026-06-30',
-      description: 'Peking University Institute of Computer Science and Technology is recruiting an Assistant Professor in Artificial Intelligence, responsible for undergraduate and graduate teaching, conducting cutting-edge research in AI, publishing high-level academic papers, applying for research projects, and supervising graduate students.',
-      responsibilities: [
-        'Undertake AI-related courses for undergraduate and graduate students',
-        'Conduct cutting-edge research in AI and publish high-level academic papers',
-        'Apply for national and provincial research projects',
-        'Guide graduate students in research work',
-        'Participate in discipline construction and academic exchange activities',
-      ],
-      requirements: [
-        'PhD degree in Computer Science, Artificial Intelligence or related fields',
-        'High-level academic achievements in AI',
-        'Good teaching ability and teamwork spirit',
-        'Ability to independently conduct research and guide graduate students',
-      ],
-      skills: ['Artificial Intelligence', 'Machine Learning', 'Deep Learning', 'Computer Vision', 'Natural Language Processing'],
-    },
-    '2': {
-      id: '2',
-      title: 'Senior Machine Learning Engineer',
-      company: 'Tencent Technology',
-      location: 'Shenzhen',
-      salary: 'Annual Salary: $90,000-120,000',
-      type: 'enterprise',
-      deadline: '2026-05-15',
-      description: 'Tencent Technology Artificial Intelligence Laboratory is recruiting a Senior Machine Learning Engineer, responsible for the research and deployment of large-scale machine learning models, participating in the innovation and application of core AI technologies, and promoting the implementation of AI technologies in Tencent products.',
-      responsibilities: [
-        'Design and implement large-scale machine learning models',
-        'Optimize model performance and deployment efficiency',
-        'Participate in innovative research of AI technologies',
-        'Collaborate with product teams to promote the application of AI technologies in products',
-        'Track and research the latest machine learning technologies',
-      ],
-      requirements: [
-        'Masters degree or above in Computer Science, Artificial Intelligence or related fields',
-        '3+ years of work experience in machine learning',
-        'Proficient in Python, TensorFlow or PyTorch and other deep learning frameworks',
-        'Experience in large-scale machine learning system research and development',
-        'Good teamwork and communication skills',
-      ],
-      skills: ['Machine Learning', 'Deep Learning', 'Python', 'TensorFlow', 'PyTorch', 'Distributed Computing'],
-    },
-    '4': {
-      id: '4',
-      title: 'Data Scientist',
-      company: 'Alibaba Group',
-      location: 'Hangzhou',
-      salary: 'Annual Salary: $75,000-105,000',
-      type: 'enterprise',
-      deadline: '2026-06-30',
-      description: 'Alibaba Group is recruiting a Data Scientist, responsible for big data analysis and machine learning model development, participating in business decision support and product optimization, and promoting data-driven business innovation.',
-      responsibilities: [
-        'Design and implement data analysis and machine learning models',
-        'Extract valuable information and insights from massive data',
-        'Collaborate with business teams to support business decisions',
-        'Participate in product optimization and business innovation',
-        'Track and research the latest data analysis technologies',
-      ],
-      requirements: [
-        'Masters degree or above in Computer Science, Statistics, Mathematics or related fields',
-        '3+ years of work experience in data analysis or machine learning',
-        'Proficient in Python, SQL and other data analysis tools',
-        'Experience in large-scale data analysis',
-        'Good teamwork and communication skills',
-      ],
-      skills: ['Data Analysis', 'Machine Learning', 'Python', 'SQL', 'Statistics', 'Data Visualization'],
-    },
-    '5': {
-      id: '5',
-      title: 'Algorithm Engineer',
-      company: 'Baidu',
-      location: 'Beijing',
-      salary: 'Annual Salary: $82,000-112,000',
-      type: 'enterprise',
-      deadline: '2026-06-15',
-      description: 'Baidu is recruiting an Algorithm Engineer, responsible for the research and optimization of core business algorithms such as search and recommendation, participating in the design and implementation of algorithm systems, and promoting the continuous improvement of algorithm performance.',
-      responsibilities: [
-        'Design and implement core algorithms for search, recommendation, etc.',
-        'Optimize algorithm performance and user experience',
-        'Participate in the design and architecture of algorithm systems',
-        'Collaborate with product teams to promote the application of algorithms in products',
-        'Track and research the latest algorithm technologies',
-      ],
-      requirements: [
-        'Masters degree or above in Computer Science or related fields',
-        '3+ years of work experience in algorithm research and development',
-        'Proficient in C++, Python and other programming languages',
-        'Experience in search, recommendation and other related algorithms',
-        'Good teamwork and communication skills',
-      ],
-      skills: ['Algorithm Design', 'C++', 'Python', 'Search Algorithms', 'Recommendation Systems', 'Machine Learning'],
-    },
-    '6': {
-      id: '6',
-      title: 'AI Researcher',
-      institution: 'Tsinghua University',
-      location: 'Beijing',
-      salary: 'Annual Salary: $67,000-97,000',
-      type: 'university',
-      deadline: '2026-07-31',
-      description: 'Tsinghua University Institute of Artificial Intelligence is recruiting an AI Researcher, responsible for cutting-edge research in the field of artificial intelligence, publishing high-level academic papers, applying for research projects, and guiding graduate students in research work.',
-      responsibilities: [
-        'Conduct cutting-edge research in the field of artificial intelligence',
-        'Publish high-level academic papers',
-        'Apply for national and provincial research projects',
-        'Guide graduate students in research work',
-        'Participate in discipline construction and academic exchange activities',
-      ],
-      requirements: [
-        'PhD degree in Computer Science, Artificial Intelligence or related fields',
-        'High-level academic achievements in artificial intelligence',
-        'Good research ability and teamwork spirit',
-        'Ability to independently conduct research and guide graduate students',
-      ],
-      skills: ['Artificial Intelligence', 'Machine Learning', 'Deep Learning', 'Computer Vision', 'Natural Language Processing', 'Reinforcement Learning'],
-    },
-    '11': {
-      id: '11',
-      title: 'Industry Research Position',
-      company: 'Sichuan Provincial Industrial Technology Research Institute (Sichuan Provincial Engineering Science and Technology Development Strategy Research Institute)',
-      location: 'Chengdu',
-      salary: '¥8,000-13,000',
-      type: 'enterprise',
-      deadline: '2026-06-30',
-      description: 'Sichuan Provincial Industrial Technology Research Institute (Sichuan Provincial Engineering Science and Technology Development Strategy Research Institute) is a public welfare二类 institution directly under the Sichuan Provincial Department of Science and Technology. It mainly conducts research on industrial technology analysis and forecasting, development strategies, etc.; undertakes services such as mining and discovery, evaluation and assessment, landing and transformation, enterprise incubation and cultivation of industrial technology achievements (projects); undertakes major engineering science and technology strategic planning consulting, achievement transformation, talent training, academic exchange and other work in the province; responsible for daily liaison and service guarantee for academicians.',
-      responsibilities: [
-        'Conduct industrial technology analysis and forecasting and development strategy research',
-        'Undertake the mining and discovery, evaluation and assessment of industrial technology achievements',
-        'Participate in the landing and transformation of industrial technology achievements and enterprise incubation and cultivation',
-        'Undertake major engineering science and technology strategic planning consulting in the province',
-        'Participate in achievement transformation, talent training and academic exchange activities',
-        'Responsible for the writing of industrial research related official documents',
-      ],
-      requirements: [
-        'PhD degree',
-        '3+ years of working experience in government agencies, public institutions, state-owned enterprises',
-        'Strong ability in official document writing',
-        'Prior experience in industrial planning, industrial research is preferred',
-        'Under 40 years old',
-      ],
-      skills: ['Industrial Planning', 'Industrial Research', 'Official Document Writing', 'Strategic Analysis', 'Project Evaluation'],
-      // Attachment requirements configuration
-      attachmentRequirements: {
-        chinese: ['resume'],
-        foreign: ['resume', 'degree-certificate', 'work-permit']
-      },
-    },
-  },
-};
-
-// 模拟相关岗位数据
-const relatedJobs = {
-  zh: [
-    {
-      id: '4',
-      title: '数据科学家',
-      company: '阿里巴巴集团',
-      location: '杭州',
-      salary: '年薪50-70万',
-    },
-    {
-      id: '5',
-      title: '算法工程师',
-      company: '百度',
-      location: '北京',
-      salary: '年薪55-75万',
-    },
-    {
-      id: '6',
-      title: '人工智能研究员',
-      institution: '清华大学',
-      location: '北京',
-      salary: '年薪45-65万',
-    },
-  ],
-  en: [
-    {
-      id: '4',
-      title: 'Data Scientist',
-      company: 'Alibaba Group',
-      location: 'Hangzhou',
-      salary: 'Annual Salary: $75,000-105,000',
-    },
-    {
-      id: '5',
-      title: 'Algorithm Engineer',
-      company: 'Baidu',
-      location: 'Beijing',
-      salary: 'Annual Salary: $82,000-112,000',
-    },
-    {
-      id: '6',
-      title: 'AI Researcher',
-      institution: 'Tsinghua University',
-      location: 'Beijing',
-      salary: 'Annual Salary: $67,000-97,000',
-    },
-  ],
-};
+// 相关岗位数据类型定义
+interface RelatedJob {
+  id: string;
+  title: string;
+  company?: string;
+  institution?: string;
+  location: string;
+  salary: string;
+}
 
 export default function JobDetailPage() {
   const params = useParams();
@@ -486,6 +105,8 @@ export default function JobDetailPage() {
   const [uploadedFiles, setUploadedFiles] = useState<Record<string, File[]>>({});
   const [uploadProgress, setUploadProgress] = useState<Record<string, number>>({});
   const [uploadStatus, setUploadStatus] = useState<Record<string, 'idle' | 'uploading' | 'success' | 'error'>>({});
+  const [relatedJobs, setRelatedJobs] = useState<RelatedJob[]>([]);
+  const [relatedJobsLoading, setRelatedJobsLoading] = useState(true);
   
   // 收藏相关状态
   const [isFavorite, setIsFavorite] = useState(false);
@@ -535,15 +156,51 @@ export default function JobDetailPage() {
 
   // 获取岗位详情
   useEffect(() => {
-    setIsLoading(true);
-    // 模拟API请求
-      setTimeout(() => {
-        // 尝试使用字符串ID和数字ID两种方式获取岗位数据
-        const jobData = (mockJobs[lang] as any)[jobId] || (mockJobs[lang] as any)[parseInt(jobId)];
-        setJob(jobData);
+    const fetchJobDetail = async () => {
+      try {
+        setIsLoading(true);
+        // 从API获取岗位详情
+        const response = await fetch(`/api/jobs?id=${jobId}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch job details');
+        }
+        const jobData = await response.json();
+        // 由于API返回的是数组，我们需要找到匹配的岗位
+        const matchedJob = Array.isArray(jobData) ? jobData.find((j: any) => j.id === jobId) : jobData;
+        setJob(matchedJob);
+      } catch (error) {
+        console.error('Error fetching job details:', error);
+        setJob(null);
+      } finally {
         setIsLoading(false);
-      }, 500);
-  }, [jobId, lang]);
+      }
+    };
+    
+    const fetchRelatedJobs = async () => {
+      try {
+        setRelatedJobsLoading(true);
+        // 从API获取所有岗位，然后过滤出相关岗位
+        const response = await fetch('/api/jobs');
+        if (!response.ok) {
+          throw new Error('Failed to fetch related jobs');
+        }
+        const allJobs = await response.json();
+        // 过滤出与当前岗位类型相同但ID不同的岗位，作为相关岗位
+        const filteredJobs = Array.isArray(allJobs) ? allJobs
+          .filter((j: any) => j.id !== jobId && j.type === job?.type)
+          .slice(0, 3) : [];
+        setRelatedJobs(filteredJobs);
+      } catch (error) {
+        console.error('Error fetching related jobs:', error);
+        setRelatedJobs([]);
+      } finally {
+        setRelatedJobsLoading(false);
+      }
+    };
+    
+    fetchJobDetail();
+    fetchRelatedJobs();
+  }, [jobId, lang, job?.type]);
 
   const handleLogout = () => {
     if (typeof window !== 'undefined') {
@@ -1165,24 +822,44 @@ export default function JobDetailPage() {
         <div className="mb-8">
           <h2 className="text-xl font-semibold text-gray-800 mb-6">{t.jobDetail.relatedJobs}</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {relatedJobs[lang].map((relatedJob) => (
-              <div key={relatedJob.id} className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
-                <h3 className="text-lg font-medium text-gray-800 mb-2">
-                  <a href={`/job/${relatedJob.id}`} className="hover:text-primary">{relatedJob.title}</a>
-                </h3>
-                <p className="text-gray-600 mb-2">
-                  {lang === 'zh' ? '企业/大学名称已隐藏' : 'Company/University name hidden'}
-                </p>
-                <div className="flex items-center text-gray-500 text-sm mb-4">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                  {relatedJob.location}
+            {relatedJobsLoading ? (
+              // 加载状态
+              Array.from({ length: 3 }).map((_, index) => (
+                <div key={index} className="bg-white rounded-lg shadow-sm p-6">
+                  <div className="animate-pulse">
+                    <div className="h-6 bg-gray-200 rounded mb-2"></div>
+                    <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                    <div className="h-4 bg-gray-200 rounded mb-4"></div>
+                    <div className="h-4 bg-gray-200 rounded"></div>
+                  </div>
                 </div>
-                <p className="text-gray-700 font-medium">{relatedJob.salary}</p>
+              ))
+            ) : relatedJobs.length === 0 ? (
+              // 无相关岗位
+              <div className="col-span-full text-center py-12">
+                <p className="text-gray-600">{lang === 'zh' ? '暂无相关岗位' : 'No related jobs available'}</p>
               </div>
-            ))}
+            ) : (
+              // 正常状态
+              relatedJobs.map((relatedJob) => (
+                <div key={relatedJob.id} className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
+                  <h3 className="text-lg font-medium text-gray-800 mb-2">
+                    <a href={`/job/${relatedJob.id}`} className="hover:text-primary">{relatedJob.title}</a>
+                  </h3>
+                  <p className="text-gray-600 mb-2">
+                    {relatedJob.company || relatedJob.institution || (lang === 'zh' ? '企业/大学名称已隐藏' : 'Company/University name hidden')}
+                  </p>
+                  <div className="flex items-center text-gray-500 text-sm mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    {relatedJob.location}
+                  </div>
+                  <p className="text-gray-700 font-medium">{relatedJob.salary}</p>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>
