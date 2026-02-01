@@ -6,94 +6,37 @@ import { MembershipOrder } from '@/lib/admin-types';
 import { User } from '@/lib/user-model';
 import { MembershipLevel, MEMBERSHIP_PLANS } from '@/lib/membership';
 
-// 本地存储键名
-const MEMBERSHIP_ORDERS_KEY = 'membershipOrders';
-const USERS_KEY = 'users';
-
 // 会员等级定义（直接使用前端的枚举）
 const MEMBERSHIP_LEVELS = MembershipLevel;
 
-// 会员计划配置（直接使用前端的MEMBERSHIP_PLANS）
-const getMembershipPlan = (level: MembershipLevel) => {
-  return MEMBERSHIP_PLANS.find(plan => plan.level === level) || MEMBERSHIP_PLANS[0];
-};
-
-// 会员价格定义（从前端的MEMBERSHIP_PLANS获取）
-const MEMBERSHIP_PRICES = {
-  [MembershipLevel.FREE]: getMembershipPlan(MembershipLevel.FREE).price,
-  [MembershipLevel.VIP]: getMembershipPlan(MembershipLevel.VIP).price,
-  [MembershipLevel.SVIP]: getMembershipPlan(MembershipLevel.SVIP).price
-};
-
-// 生成模拟会员订单
-const generateMockMembershipOrders = (): MembershipOrder[] => {
-  const users = ['user1', 'user2', 'user3', 'user4', 'user5', 'user6', 'user7', 'user8', 'user9', 'user10'];
-  const levels = [MEMBERSHIP_LEVELS.VIP, MEMBERSHIP_LEVELS.SVIP];
-  const paymentMethods = ['credit_card', 'alipay', 'wechat_pay', 'paypal'];
-  const statuses = ['completed', 'pending', 'cancelled'];
-  
-  const mockOrders: MembershipOrder[] = [];
-  const now = new Date();
-  
-  // 生成过去12个月的模拟数据
-  for (let i = 0; i < 12; i++) {
-    // 每月生成3-10条记录
-    const monthlyOrders = Math.floor(Math.random() * 8) + 3;
-    
-    for (let j = 0; j < monthlyOrders; j++) {
-      const timestamp = new Date(now);
-      timestamp.setMonth(now.getMonth() - i);
-      timestamp.setDate(Math.floor(Math.random() * 28) + 1);
-      timestamp.setHours(Math.floor(Math.random() * 24));
-      timestamp.setMinutes(Math.floor(Math.random() * 60));
-      timestamp.setSeconds(Math.floor(Math.random() * 60));
-      
-      const level = levels[Math.floor(Math.random() * levels.length)];
-      const amount = MEMBERSHIP_PRICES[level];
-      const status = Math.random() > 0.15 ? 'completed' : statuses[Math.floor(Math.random() * statuses.length)]; // 85% completed
-      
-      // 计算过期时间（根据会员等级）
-      const expiresAt = new Date(timestamp);
-      if (level === MEMBERSHIP_LEVELS.VIP) {
-        expiresAt.setMonth(expiresAt.getMonth() + 1); // 1个月
-      } else if (level === MEMBERSHIP_LEVELS.SVIP) {
-        // SVIP是终身会员，设置一个较远的过期时间
-        expiresAt.setFullYear(expiresAt.getFullYear() + 99);
-      }
-      
-      mockOrders.push({
-        id: `order-${timestamp.getTime()}-${j}`,
-        userId: users[Math.floor(Math.random() * users.length)],
-        membershipLevel: level,
-        amount,
-        paymentMethod: paymentMethods[Math.floor(Math.random() * paymentMethods.length)],
-        status: status as 'pending' | 'completed' | 'cancelled',
-        createdAt: timestamp.toISOString(),
-        expiresAt: expiresAt.toISOString()
-      });
+// 从API获取真实会员订单数据
+const fetchMembershipOrders = async (): Promise<MembershipOrder[]> => {
+  try {
+    const response = await fetch('/api/admin/membership-orders');
+    if (!response.ok) {
+      throw new Error('Failed to fetch membership orders');
     }
-  }
-  
-  return mockOrders.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-};
-
-// 获取所有会员订单
-const getAllMembershipOrders = (): MembershipOrder[] => {
-  const ordersJson = localStorage.getItem(MEMBERSHIP_ORDERS_KEY);
-  if (ordersJson) {
-    return JSON.parse(ordersJson);
-  } else {
-    // 生成并保存模拟数据
-    const mockData = generateMockMembershipOrders();
-    localStorage.setItem(MEMBERSHIP_ORDERS_KEY, JSON.stringify(mockData));
-    return mockData;
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching membership orders:', error);
+    return [];
   }
 };
 
-// 获取所有用户
-const getAllUsers = (): User[] => {
-  const usersJson = localStorage.getItem(USERS_KEY);
-  return usersJson ? JSON.parse(usersJson) : [];
+// 从API获取真实用户数据
+const fetchUsers = async (): Promise<User[]> => {
+  try {
+    const response = await fetch('/api/admin/users');
+    if (!response.ok) {
+      throw new Error('Failed to fetch users');
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    return [];
+  }
 };
 
 // 按会员等级统计用户数量
@@ -154,11 +97,13 @@ export default function MembershipRevenuePage() {
 
   // 初始化数据
   useEffect(() => {
-    const fetchData = () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
-        const allOrders = getAllMembershipOrders();
-        const allUsers = getAllUsers();
+        const [allOrders, allUsers] = await Promise.all([
+          fetchMembershipOrders(),
+          fetchUsers()
+        ]);
         setOrders(allOrders);
         setUsers(allUsers);
         setFilteredOrders(allOrders);
