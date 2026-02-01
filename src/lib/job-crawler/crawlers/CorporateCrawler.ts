@@ -140,7 +140,7 @@ class CorporateCrawler {
    * @param baseUrl 基础URL
    * @returns 解析后的岗位
    */
-  private async parseJob(jobElement: cheerio.Cheerio<any>, baseUrl: string = this.config.baseUrl): Promise<Job | null> {
+  private async parseJob(jobElement: any, baseUrl: string = this.config.baseUrl): Promise<Job | null> {
     try {
       // 提取岗位标题
       const title = jobElement.find(this.config.selectors.jobTitle).text().trim();
