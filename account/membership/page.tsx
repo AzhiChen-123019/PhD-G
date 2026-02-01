@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { LanguageSelector } from '@/components/LanguageSelector';
-import { MembershipPlan, MEMBERSHIP_PLANS, MembershipLevel } from '../../../lib/membership';
+import LanguageSelector from '@/components/LanguageSelector';
+import { MembershipPlan, MEMBERSHIP_PLANS, MembershipLevel } from '@/lib/membership';
 
 // 多语言支持
 const translations = {
