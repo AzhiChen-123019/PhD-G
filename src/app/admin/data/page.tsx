@@ -1,3 +1,6 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 interface UserData {
@@ -29,124 +32,38 @@ interface EmailData {
 }
 
 export default function DataPage() {
-  // 模拟用户数据
-  const userData: UserData[] = [
-    {
-      id: '1',
-      name: '张三',
-      email: 'zhangsan@example.com',
-      nationality: '中国',
-      registerTime: '2026-01-23 10:00',
-      uploadStatus: 'Completed',
-    },
-    {
-      id: '2',
-      name: 'John Doe',
-      email: 'john.doe@example.com',
-      nationality: '美国',
-      registerTime: '2026-01-23 09:30',
-      uploadStatus: 'Completed',
-    },
-    {
-      id: '3',
-      name: '李四',
-      email: 'lisi@example.com',
-      nationality: '中国',
-      registerTime: '2026-01-22 16:45',
-      uploadStatus: 'Pending',
-    },
-    {
-      id: '4',
-      name: 'Jane Smith',
-      email: 'jane.smith@example.com',
-      nationality: '英国',
-      registerTime: '2026-01-22 14:20',
-      uploadStatus: 'Completed',
-    },
-  ];
+  const [userData, setUserData] = useState<UserData[]>([]);
+  const [fileData, setFileData] = useState<FileData[]>([]);
+  const [emailData, setEmailData] = useState<EmailData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // 模拟文件数据
-  const fileData: FileData[] = [
-    {
-      id: 'f1',
-      userId: '1',
-      fileName: 'resume_zhangsan.pdf',
-      fileType: '简历',
-      uploadTime: '2026-01-23 10:15',
-      filePath: '/uploads/resume_zhangsan.pdf',
-    },
-    {
-      id: 'f2',
-      userId: '2',
-      fileName: 'resume_john.pdf',
-      fileType: '简历',
-      uploadTime: '2026-01-23 09:40',
-      filePath: '/uploads/resume_john.pdf',
-    },
-    {
-      id: 'f3',
-      userId: '2',
-      fileName: 'degree_john.pdf',
-      fileType: '学历学位证明',
-      uploadTime: '2026-01-23 09:41',
-      filePath: '/uploads/degree_john.pdf',
-    },
-    {
-      id: 'f4',
-      userId: '2',
-      fileName: 'passport_john.pdf',
-      fileType: '护照',
-      uploadTime: '2026-01-23 09:42',
-      filePath: '/uploads/passport_john.pdf',
-    },
-    {
-      id: 'f5',
-      userId: '4',
-      fileName: 'resume_jane.pdf',
-      fileType: '简历',
-      uploadTime: '2026-01-22 14:30',
-      filePath: '/uploads/resume_jane.pdf',
-    },
-    {
-      id: 'f6',
-      userId: '4',
-      fileName: 'degree_jane.pdf',
-      fileType: '学历学位证明',
-      uploadTime: '2026-01-22 14:31',
-      filePath: '/uploads/degree_jane.pdf',
-    },
-  ];
+  // 获取数据
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        
+        // 在真实环境中，这里应该从数据库获取所有数据
+        // 由于数据库连接问题，暂时使用空数组
+        // 在实际环境中，这里应该查询数据库
+        const users: UserData[] = [];
+        const files: FileData[] = [];
+        const emails: EmailData[] = [];
+        
+        setUserData(users);
+        setFileData(files);
+        setEmailData(emails);
+        setError(null);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  // 模拟邮件数据
-  const emailData: EmailData[] = [
-    {
-      id: 'e1',
-      userId: '1',
-      recipient: 'hr@company.com',
-      subject: '邀请投递简历 - 华人博士',
-      sendTime: '2026-01-23 11:00',
-      status: 'Sent',
-      attachments: 'resume_zhangsan.pdf',
-    },
-    {
-      id: 'e2',
-      userId: '2',
-      recipient: 'hr@company.com',
-      subject: '邀请投递简历 - 外籍博士',
-      sendTime: '2026-01-23 10:00',
-      status: 'Sent',
-      attachments: 'resume_john.pdf, degree_john.pdf, passport_john.pdf',
-    },
-    {
-      id: 'e3',
-      userId: '4',
-      recipient: 'hr@company.com',
-      subject: '邀请投递简历 - 外籍博士',
-      sendTime: '2026-01-22 15:00',
-      status: 'Sent',
-      attachments: 'resume_jane.pdf, degree_jane.pdf',
-    },
-  ];
+    fetchData();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50">
