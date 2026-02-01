@@ -569,7 +569,7 @@ export const scrapeJobs = async (options: ScrapeOptions = {}): Promise<Job[]> =>
         locations: options.locations || ['全国'],
         maxResults: options.maxResults || 10,
         minRating: options.minRating || 4.0,
-        platforms: options.platforms || ['LinkedIn', 'Glassdoor', 'Indeed', '51Job', '智联招聘', '猎聘'],
+        platforms: options.platforms || ['51Job', '智联招聘', '猎聘', 'BOSS直聘'],
         userProfile: options.userProfile
       };
 
