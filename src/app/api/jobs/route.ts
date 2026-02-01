@@ -1,14 +1,47 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { JobStatus, JobCategory } from '@/lib/job-model';
-import Job from '@/models/Job';
 import { connectToDB } from '@/lib/mongoose';
+
+// 动态导入Job模型，避免在模块加载时出错
+let Job: any;
+try {
+  Job = require('@/models/Job').default;
+} catch (error) {
+  console.error('Failed to load Job model:', error);
+  Job = null;
+}
 
 export async function GET(request: NextRequest) {
   try {
-    await connectToDB();
+    const dbConnection = await connectToDB();
+    
+    // 检查数据库连接和Job模型是否可用
+    if (!dbConnection || !Job) {
+      const { searchParams } = request.nextUrl;
+      const id = searchParams.get('id');
+      
+      // 如果请求单个岗位但数据库连接失败或模型不可用，返回错误
+      if (id) {
+        return NextResponse.json({ error: 'Database connection failed' }, { status: 503 });
+      }
+      
+      // 如果请求所有岗位但数据库连接失败或模型不可用，返回空数组
+      return NextResponse.json([], { status: 200 });
+    }
+    
     const { searchParams } = request.nextUrl;
     const category = searchParams.get('category');
     const status = searchParams.get('status');
+    const id = searchParams.get('id');
+    
+    // 按id查询单个岗位
+    if (id) {
+      const job = await Job.findById(id);
+      if (!job) {
+        return NextResponse.json({ error: 'Job not found' }, { status: 404 });
+      }
+      return NextResponse.json(job, { status: 200 });
+    }
     
     const query: any = {};
     
