@@ -1,6 +1,7 @@
 // 岗位抓取服务
 
 import { Job, JobCategory, EnterpriseJobSubType, JobLibraryType, JobStatus } from './job-model';
+import jobCrawler from './job-crawler';
 
 export interface ScrapeOptions {
   keywords?: string[];
