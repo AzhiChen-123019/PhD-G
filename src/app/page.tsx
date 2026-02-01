@@ -78,77 +78,19 @@ const translations = {
   },
 };
 
-// 模拟热门岗位数据
-const hotJobs = {
-  zh: [
-    {
-      id: 1,
-      title: '人工智能助理教授',
-      company: '北京大学',
-      location: '北京',
-      salary: '年薪40-60万',
-      type: 'university',
-    },
-    {
-      id: 2,
-      title: '高级机器学习工程师',
-      company: '腾讯科技',
-      location: '深圳',
-      salary: '年薪60-80万',
-      type: 'enterprise',
-    },
-    {
-      id: 3,
-      title: '生物医学研究员',
-      company: '中科院生物物理研究所',
-      location: '北京',
-      salary: '年薪35-55万',
-      type: 'university',
-    },
-    {
-      id: 4,
-      title: '数据科学总监',
-      company: '阿里巴巴集团',
-      location: '杭州',
-      salary: '年薪80-120万',
-      type: 'enterprise',
-    },
-  ],
-  en: [
-    {
-      id: 1,
-      title: 'Assistant Professor of Artificial Intelligence',
-      company: 'Peking University',
-      location: 'Beijing',
-      salary: 'Annual Salary: $60,000-90,000',
-      type: 'university',
-    },
-    {
-      id: 2,
-      title: 'Senior Machine Learning Engineer',
-      company: 'Tencent Technology',
-      location: 'Shenzhen',
-      salary: 'Annual Salary: $90,000-120,000',
-      type: 'enterprise',
-    },
-    {
-      id: 3,
-      title: 'Biomedical Researcher',
-      company: 'Chinese Academy of Sciences',
-      location: 'Beijing',
-      salary: 'Annual Salary: $50,000-80,000',
-      type: 'university',
-    },
-    {
-      id: 4,
-      title: 'Data Science Director',
-      company: 'Alibaba Group',
-      location: 'Hangzhou',
-      salary: 'Annual Salary: $120,000-180,000',
-      type: 'enterprise',
-    },
-  ],
-};
+// 岗位数据类型定义
+interface Job {
+  id: string;
+  title: string;
+  company: string;
+  location: string;
+  salary: string;
+  type: string;
+  tags?: {
+    category: string;
+    subType: string;
+  };
+}
 
 export default function Home() {
   // 初始化状态为默认值，确保服务器端和客户端渲染一致
@@ -159,6 +101,11 @@ export default function Home() {
   // 登录状态管理
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState('');
+  
+  // 岗位数据状态管理
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [jobsLoading, setJobsLoading] = useState(true);
+  const [jobsError, setJobsError] = useState<string | null>(null);
 
   // 上传简历状态管理
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -207,6 +154,30 @@ export default function Home() {
         setUserName(user.username || 'User');
       }
     }
+  }, []);
+  
+  // 从API获取岗位数据
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        setJobsLoading(true);
+        setJobsError(null);
+        const response = await fetch('/api/jobs');
+        if (!response.ok) {
+          throw new Error('Failed to fetch jobs');
+        }
+        const data = await response.json();
+        // 限制只显示前4个岗位
+        setJobs(data.slice(0, 4));
+      } catch (error) {
+        setJobsError(error instanceof Error ? error.message : 'An error occurred');
+        console.error('Error fetching jobs:', error);
+      } finally {
+        setJobsLoading(false);
+      }
+    };
+    
+    fetchJobs();
   }, []);
   
   const handleLogout = () => {
@@ -470,44 +441,81 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">{t.jobs.title}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {hotJobs[lang].map((job) => (
-              <div key={job.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-                <div className="p-6 flex flex-col h-full">
-                  <div>
-                    <div className="flex justify-between items-start mb-4">
-                      <h3 className="text-lg font-semibold text-gray-900">{job.title}</h3>
-                      <span className={`px-2 py-1 text-xs font-semibold rounded-full ${job.type === 'university' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}`}>
-                        {job.type === 'university' ? t.jobs.academic : t.jobs.enterprise}
-                      </span>
+            {jobsLoading ? (
+              // 加载状态
+              Array.from({ length: 4 }).map((_, index) => (
+                <div key={index} className="bg-white rounded-lg shadow-md overflow-hidden">
+                  <div className="p-6 flex flex-col h-full">
+                    <div className="animate-pulse">
+                      <div className="h-6 bg-gray-200 rounded mb-4"></div>
+                      <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                      <div className="h-4 bg-gray-200 rounded mb-4"></div>
+                      <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                      <div className="h-4 bg-gray-200 rounded mb-6"></div>
                     </div>
-                    <p className="text-gray-600 mb-2">{job.company}</p>
-                    <div className="flex items-center text-gray-500 mb-4">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                      </svg>
-                      {job.location}
+                    <div className="mt-auto">
+                      <div className="h-10 bg-gray-200 rounded"></div>
                     </div>
-                    <div className="flex items-center text-gray-500 mb-6">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      {job.salary}
-                    </div>
-                  </div>
-                  <div className="mt-auto">
-                    <button onClick={(e) => {
-                      e.preventDefault();
-                      console.log('View details clicked for job:', job.id);
-                      // 跳转到岗位详情页
-                      window.location.href = `/job/${job.id}`;
-                    }} className="inline-block w-full py-2 px-4 bg-primary text-white rounded-md text-center hover:bg-primary/90 transition-colors">
-                      {t.jobs.viewDetails}
-                    </button>
                   </div>
                 </div>
+              ))
+            ) : jobsError ? (
+              // 错误状态
+              <div className="col-span-full text-center py-12">
+                <p className="text-red-600">{t.jobs.title} {lang === 'zh' ? '加载失败' : 'loading failed'}: {jobsError}</p>
               </div>
-            ))}
+            ) : jobs.length === 0 ? (
+              // 无数据状态
+              <div className="col-span-full text-center py-12">
+                <p className="text-gray-600">{lang === 'zh' ? '暂无岗位数据' : 'No job data available'}</p>
+              </div>
+            ) : (
+              // 正常状态
+              jobs.map((job) => (
+                <div key={job.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+                  <div className="p-6 flex flex-col h-full">
+                    <div>
+                      <div className="flex justify-between items-start mb-4">
+                        <h3 className="text-lg font-semibold text-gray-900">{job.title}</h3>
+                        <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                          job.tags?.category === 'university' || job.type === 'university' 
+                            ? 'bg-blue-100 text-blue-800' 
+                            : 'bg-green-100 text-green-800'
+                        }`}>
+                          {(job.tags?.category === 'university' || job.type === 'university') 
+                            ? t.jobs.academic 
+                            : t.jobs.enterprise}
+                        </span>
+                      </div>
+                      <p className="text-gray-600 mb-2">{job.company}</p>
+                      <div className="flex items-center text-gray-500 mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        {job.location}
+                      </div>
+                      <div className="flex items-center text-gray-500 mb-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        {job.salary}
+                      </div>
+                    </div>
+                    <div className="mt-auto">
+                      <button onClick={(e) => {
+                        e.preventDefault();
+                        console.log('View details clicked for job:', job.id);
+                        // 跳转到岗位详情页
+                        window.location.href = `/job/${job.id}`;
+                      }} className="inline-block w-full py-2 px-4 bg-primary text-white rounded-md text-center hover:bg-primary/90 transition-colors">
+                        {t.jobs.viewDetails}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
           <div className="text-center mt-10">
             <button onClick={(e) => {
