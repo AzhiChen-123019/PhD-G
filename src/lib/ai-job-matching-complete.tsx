@@ -3,6 +3,7 @@
 // 满足用户要求：移除AI加载弹窗，实现4星以上匹配度岗位抓取，同步提示词到管理后台
 
 import React, { useState } from 'react';
+import jobCrawler from './job-crawler';
 
 // ==================== 类型定义 ====================
 
@@ -560,9 +561,22 @@ export const scrapeJobs = async (options: ScrapeOptions = {}): Promise<Job[]> =>
     const maxDuration = options.maxDuration || 10000;
     
     try {
-      // 使用模拟数据作为后备
-      console.log('使用模拟数据作为后备');
-      const crawledJobs = generateMockJobs(options);
+      // 使用真实爬虫系统抓取岗位
+      console.log('使用真实爬虫系统抓取岗位');
+      
+      // 构建爬虫选项
+      const crawlOptions = {
+        keywords: options.keywords || ['人工智能', '机器学习', '深度学习', '算法'],
+        locations: options.locations || ['全国'],
+        maxResults: options.maxResults || 10,
+        minRating: options.minRating || 4.0,
+        platforms: options.platforms || ['LinkedIn', 'Glassdoor', 'Indeed', '51Job', '智联招聘', '猎聘'],
+        userProfile: options.userProfile
+      };
+
+      // 调用爬虫系统抓取岗位
+      const crawlResult = await jobCrawler.crawlJobs(crawlOptions);
+      const crawledJobs = crawlResult.jobs;
 
       // 根据选项筛选岗位
       let filteredJobs = [...crawledJobs];
@@ -572,7 +586,7 @@ export const scrapeJobs = async (options: ScrapeOptions = {}): Promise<Job[]> =>
       filteredJobs = filteredJobs.filter(job => job.rating >= minRating);
 
       // 按相关度排序
-      filteredJobs.sort((a, b) => b.relevanceScore - a.relevanceScore);
+      filteredJobs.sort((a, b) => (b.relevanceScore || 0) - (a.relevanceScore || 0));
 
       // 限制结果数量
       const maxResults = options.maxResults || 10;
