@@ -164,7 +164,7 @@ const jobSchema = new Schema<JobDocument>({
   timestamps: true,
   toJSON: {
     virtuals: true,
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       ret.id = doc._id.toString();
       delete ret._id;
       delete ret.__v;
@@ -172,7 +172,7 @@ const jobSchema = new Schema<JobDocument>({
   },
   toObject: {
     virtuals: true,
-    transform: function(doc, ret) {
+    transform: function(doc, ret: any) {
       ret.id = doc._id.toString();
       delete ret._id;
       delete ret.__v;
