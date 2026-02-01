@@ -4,63 +4,18 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ApiCallRecord } from '@/lib/admin-types';
 
-// 本地存储键名
-const API_CALLS_KEY = 'apiCallRecords';
-
-// 生成模拟API调用记录
-const generateMockApiCalls = (): ApiCallRecord[] => {
-  const endpoints = [
-    '/api/job-match',
-    '/api/resume-optimize',
-    '/api/job-scrape',
-    '/api/file-upload',
-    '/api/ai-analysis'
-  ];
-  
-  const methods = ['GET', 'POST', 'PUT', 'DELETE'];
-  const users = ['user1', 'user2', 'user3', 'user4', 'user5'];
-  
-  const mockCalls: ApiCallRecord[] = [];
-  const now = new Date();
-  
-  // 生成过去30天的模拟数据
-  for (let i = 0; i < 30; i++) {
-    // 每天生成5-15条记录
-    const dailyCalls = Math.floor(Math.random() * 11) + 5;
-    
-    for (let j = 0; j < dailyCalls; j++) {
-      const timestamp = new Date(now);
-      timestamp.setDate(now.getDate() - i);
-      timestamp.setHours(Math.floor(Math.random() * 24));
-      timestamp.setMinutes(Math.floor(Math.random() * 60));
-      timestamp.setSeconds(Math.floor(Math.random() * 60));
-      
-      mockCalls.push({
-        id: `call-${timestamp.getTime()}-${j}`,
-        userId: users[Math.floor(Math.random() * users.length)],
-        endpoint: endpoints[Math.floor(Math.random() * endpoints.length)],
-        method: methods[Math.floor(Math.random() * methods.length)],
-        cost: parseFloat((Math.random() * 0.5 + 0.1).toFixed(3)), // 0.1-0.6美元
-        timestamp: timestamp.toISOString(),
-        status: Math.random() > 0.05 ? 200 : Math.floor(Math.random() * 3) + 400, // 95%成功率
-        responseTime: Math.floor(Math.random() * 1000) + 100 // 100-1100ms
-      });
+// 从API获取真实数据
+const fetchApiCallRecords = async (): Promise<ApiCallRecord[]> => {
+  try {
+    const response = await fetch('/api/admin/api-costs');
+    if (!response.ok) {
+      throw new Error('Failed to fetch API call records');
     }
-  }
-  
-  return mockCalls.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
-};
-
-// 获取API调用记录
-const getApiCallRecords = (): ApiCallRecord[] => {
-  const recordsJson = localStorage.getItem(API_CALLS_KEY);
-  if (recordsJson) {
-    return JSON.parse(recordsJson);
-  } else {
-    // 生成并保存模拟数据
-    const mockData = generateMockApiCalls();
-    localStorage.setItem(API_CALLS_KEY, JSON.stringify(mockData));
-    return mockData;
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching API call records:', error);
+    return [];
   }
 };
 
@@ -116,10 +71,10 @@ export default function ApiCostsPage() {
 
   // 初始化数据
   useEffect(() => {
-    const fetchData = () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
-        const apiCalls = getApiCallRecords();
+        const apiCalls = await fetchApiCallRecords();
         setRecords(apiCalls);
         setFilteredRecords(apiCalls);
         setError(null);
