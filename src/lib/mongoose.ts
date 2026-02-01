@@ -24,6 +24,11 @@ async function dbConnect() {
   if (!cached.promise) {
     const opts = {
       bufferCommands: false,
+      serverSelectionTimeoutMS: 10000,
+      socketTimeoutMS: 45000,
+      retryWrites: true,
+      retryReads: true,
+      family: 4
     };
 
     cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
@@ -34,4 +39,4 @@ async function dbConnect() {
   return cached.conn;
 }
 
-export default dbConnect;
+export { dbConnect as connectToDB };
