@@ -71,365 +71,7 @@ const translations = {
   },
 };
 
-// 模拟岗位数据 - 全球范围
-const universityJobs = {
-  zh: [
-    {
-      id: 1,
-      title: '人工智能助理教授',
-      company: '北京大学',
-      location: '北京',
-      salary: '年薪40-60万',
-      type: 'professor',
-      deadline: '2026-06-30',
-      institution: '北京大学',
-      experience: '3-5年',
-      degree: '博士',
-      skills: ['人工智能', '机器学习', '深度学习'],
-      description: '负责人工智能领域的教学和科研工作',
-      postedTime: '2026-01-20',
-      relevanceScore: 95,
-      url: 'https://example.com/job/1',
-      source: 'university',
-      viewCount: 100,
-      applyCount: 20,
-      rating: 4.8,
-      expireTime: Date.now() + 30 * 24 * 60 * 60 * 1000 // 30天后过期
-    },
-    {
-      id: 2,
-      title: '计算机科学副教授',
-      company: '斯坦福大学',
-      location: '斯坦福, 美国',
-      salary: '年薪15-25万美元',
-      type: 'professor',
-      deadline: '2026-08-15',
-      institution: '斯坦福大学',
-      experience: '5-8年',
-      degree: '博士',
-      skills: ['计算机科学', '人工智能', '机器学习'],
-      description: '负责计算机科学领域的教学和前沿研究工作',
-      postedTime: '2026-01-19',
-      relevanceScore: 98,
-      url: 'https://example.com/job/stanford-cs',
-      source: 'university',
-      viewCount: 250,
-      applyCount: 45,
-      rating: 4.9,
-      expireTime: Date.now() + 30 * 24 * 60 * 60 * 1000 // 30天后过期
-    },
-    {
-      id: 3,
-      title: '生物医学博士后研究员',
-      company: '牛津大学',
-      location: '牛津, 英国',
-      salary: '年薪3-4万英镑',
-      type: 'postdoc',
-      deadline: '2026-05-30',
-      institution: '牛津大学',
-      experience: '1-3年',
-      degree: '博士',
-      skills: ['生物医学', '基因编辑', '免疫学'],
-      description: '从事生物医学领域的博士后研究工作',
-      postedTime: '2026-01-18',
-      relevanceScore: 96,
-      url: 'https://example.com/job/oxford-biomed',
-      source: 'university',
-      viewCount: 180,
-      applyCount: 30,
-      rating: 4.8,
-      expireTime: Date.now() + 30 * 24 * 60 * 60 * 1000 // 30天后过期
-    },
-    {
-      id: 4,
-      title: '机械工程研究助理教授',
-      company: '东京大学',
-      location: '东京, 日本',
-      salary: '年薪600-800万日元',
-      type: 'researchAssistant',
-      deadline: '2026-07-20',
-      institution: '东京大学',
-      experience: '2-4年',
-      degree: '博士',
-      skills: ['机械工程', '机器人学', '先进制造'],
-      description: '负责机械工程领域的教学和科研工作',
-      postedTime: '2026-01-17',
-      relevanceScore: 93,
-      url: 'https://example.com/job/tokyo-mech',
-      source: 'university',
-      viewCount: 120,
-      applyCount: 22,
-      rating: 4.7,
-      expireTime: Date.now() + 30 * 24 * 60 * 60 * 1000 // 30天后过期
-    },
-    {
-      id: 5,
-      title: '物理学教授',
-      company: '苏黎世联邦理工学院',
-      location: '苏黎世, 瑞士',
-      salary: '年薪18-25万瑞士法郎',
-      type: 'professor',
-      deadline: '2026-06-30',
-      institution: '苏黎世联邦理工学院',
-      experience: '8-12年',
-      degree: '博士',
-      skills: ['物理学', '量子物理', '凝聚态物理'],
-      description: '负责物理学领域的教学和前沿研究工作',
-      postedTime: '2026-01-16',
-      relevanceScore: 97,
-      url: 'https://example.com/job/eth-physics',
-      source: 'university',
-      viewCount: 200,
-      applyCount: 35,
-      rating: 4.9,
-      expireTime: Date.now() + 30 * 24 * 60 * 60 * 1000 // 30天后过期
-    },
-    {
-      id: 6,
-      title: '化学工程博士后',
-      company: '麻省理工学院',
-      location: '剑桥, 美国',
-      salary: '年薪7-9万美元',
-      type: 'postdoc',
-      deadline: '2026-09-01',
-      institution: '麻省理工学院',
-      experience: '1-2年',
-      degree: '博士',
-      skills: ['化学工程', '材料科学', '纳米技术'],
-      description: '从事化学工程领域的博士后研究工作',
-      postedTime: '2026-01-15',
-      relevanceScore: 94,
-      url: 'https://example.com/job/mit-che',
-      source: 'university',
-      viewCount: 160,
-      applyCount: 28,
-      rating: 4.8,
-      expireTime: Date.now() + 30 * 24 * 60 * 60 * 1000 // 30天后过期
-    },
-    {
-      id: 7,
-      title: '经济学教授',
-      company: '伦敦政治经济学院',
-      location: '伦敦, 英国',
-      salary: '年薪8-12万英镑',
-      type: 'professor',
-      deadline: '2026-07-31',
-      institution: '伦敦政治经济学院',
-      experience: '7-10年',
-      degree: '博士',
-      skills: ['经济学', '计量经济学', '发展经济学'],
-      description: '负责经济学领域的教学和科研工作',
-      postedTime: '2026-01-14',
-      relevanceScore: 95,
-      url: 'https://example.com/job/lse-econ',
-      source: 'university',
-      viewCount: 140,
-      applyCount: 25,
-      rating: 4.8,
-      expireTime: Date.now() + 30 * 24 * 60 * 60 * 1000 // 30天后过期
-    },
-    {
-      id: 8,
-      title: '环境科学研究助理教授',
-      company: '新加坡国立大学',
-      location: '新加坡',
-      salary: '年薪12-18万新加坡元',
-      type: 'researchAssistant',
-      deadline: '2026-08-10',
-      institution: '新加坡国立大学',
-      experience: '3-5年',
-      degree: '博士',
-      skills: ['环境科学', '可持续发展', '气候变化'],
-      description: '负责环境科学领域的教学和科研工作',
-      postedTime: '2026-01-13',
-      relevanceScore: 92,
-      url: 'https://example.com/job/nus-env',
-      source: 'university',
-      viewCount: 110,
-      applyCount: 20,
-      rating: 4.7,
-      expireTime: Date.now() + 30 * 24 * 60 * 60 * 1000 // 30天后过期
-    },
-  ],
-  en: [
-    {
-      id: 1,
-      title: 'Assistant Professor of Artificial Intelligence',
-      company: 'Stanford University',
-      location: 'Stanford, USA',
-      salary: 'Annual Salary: $150,000-250,000',
-      type: 'professor',
-      deadline: '2026-08-15',
-      institution: 'Stanford University',
-      experience: '3-5 years',
-      degree: 'PhD',
-      skills: ['Artificial Intelligence', 'Machine Learning', 'Deep Learning'],
-      description: 'Responsible for teaching and cutting-edge research in artificial intelligence',
-      postedTime: '2026-01-19',
-      relevanceScore: 98,
-      url: 'https://example.com/job/stanford-cs',
-      source: 'university',
-      viewCount: 250,
-      applyCount: 45,
-      rating: 4.9,
-      expireTime: Date.now() + 30 * 24 * 60 * 60 * 1000 // 30 days expire
-    },
-    {
-      id: 2,
-      title: 'Associate Professor of Computer Science',
-      company: 'University of Oxford',
-      location: 'Oxford, UK',
-      salary: 'Annual Salary: £80,000-120,000',
-      type: 'professor',
-      deadline: '2026-06-30',
-      institution: 'University of Oxford',
-      experience: '5-8 years',
-      degree: 'PhD',
-      skills: ['Computer Science', 'Machine Learning', 'Data Science'],
-      description: 'Responsible for teaching and research in computer science',
-      postedTime: '2026-01-18',
-      relevanceScore: 97,
-      url: 'https://example.com/job/oxford-cs',
-      source: 'university',
-      viewCount: 220,
-      applyCount: 40,
-      rating: 4.9,
-      expireTime: Date.now() + 30 * 24 * 60 * 60 * 1000 // 30 days expire
-    },
-    {
-      id: 3,
-      title: 'Biomedical Postdoctoral Researcher',
-      company: 'Harvard University',
-      location: 'Cambridge, USA',
-      salary: 'Annual Salary: $70,000-90,000',
-      type: 'postdoc',
-      deadline: '2026-05-30',
-      institution: 'Harvard University',
-      experience: '1-3 years',
-      degree: 'PhD',
-      skills: ['Biomedical Science', 'Genetics', 'Immunology'],
-      description: 'Engage in cutting-edge postdoctoral research in biomedical science',
-      postedTime: '2026-01-17',
-      relevanceScore: 96,
-      url: 'https://example.com/job/harvard-biomed',
-      source: 'university',
-      viewCount: 190,
-      applyCount: 35,
-      rating: 4.8,
-      expireTime: Date.now() + 30 * 24 * 60 * 60 * 1000 // 30 days expire
-    },
-    {
-      id: 4,
-      title: 'Physics Professor',
-      company: 'ETH Zurich',
-      location: 'Zurich, Switzerland',
-      salary: 'Annual Salary: CHF 180,000-250,000',
-      type: 'professor',
-      deadline: '2026-07-31',
-      institution: 'ETH Zurich',
-      experience: '8-12 years',
-      degree: 'PhD',
-      skills: ['Physics', 'Quantum Physics', 'Condensed Matter'],
-      description: 'Responsible for teaching and research in physics',
-      postedTime: '2026-01-16',
-      relevanceScore: 98,
-      url: 'https://example.com/job/eth-physics',
-      source: 'university',
-      viewCount: 210,
-      applyCount: 42,
-      rating: 4.9,
-      expireTime: Date.now() + 30 * 24 * 60 * 60 * 1000 // 30 days expire
-    },
-    {
-      id: 5,
-      title: 'Chemical Engineering Postdoc',
-      company: 'Massachusetts Institute of Technology',
-      location: 'Cambridge, USA',
-      salary: 'Annual Salary: $75,000-95,000',
-      type: 'postdoc',
-      deadline: '2026-09-01',
-      institution: 'Massachusetts Institute of Technology',
-      experience: '1-2 years',
-      degree: 'PhD',
-      skills: ['Chemical Engineering', 'Materials Science', 'Nanotechnology'],
-      description: 'Engage in postdoctoral research in chemical engineering',
-      postedTime: '2026-01-15',
-      relevanceScore: 95,
-      url: 'https://example.com/job/mit-che',
-      source: 'university',
-      viewCount: 170,
-      applyCount: 32,
-      rating: 4.8,
-      expireTime: Date.now() + 30 * 24 * 60 * 60 * 1000 // 30 days expire
-    },
-    {
-      id: 6,
-      title: 'Economics Research Assistant Professor',
-      company: 'London School of Economics',
-      location: 'London, UK',
-      salary: 'Annual Salary: £70,000-100,000',
-      type: 'researchAssistant',
-      deadline: '2026-07-31',
-      institution: 'London School of Economics',
-      experience: '3-5 years',
-      degree: 'PhD',
-      skills: ['Economics', 'Econometrics', 'Development Economics'],
-      description: 'Responsible for teaching and research in economics',
-      postedTime: '2026-01-14',
-      relevanceScore: 94,
-      url: 'https://example.com/job/lse-econ',
-      source: 'university',
-      viewCount: 150,
-      applyCount: 28,
-      rating: 4.8,
-      expireTime: Date.now() + 30 * 24 * 60 * 60 * 1000 // 30 days expire
-    },
-    {
-      id: 7,
-      title: 'Mechanical Engineering Professor',
-      company: 'University of Tokyo',
-      location: 'Tokyo, Japan',
-      salary: 'Annual Salary: ¥12,000,000-18,000,000',
-      type: 'professor',
-      deadline: '2026-08-10',
-      institution: 'University of Tokyo',
-      experience: '6-10 years',
-      degree: 'PhD',
-      skills: ['Mechanical Engineering', 'Robotics', 'Advanced Manufacturing'],
-      description: 'Responsible for teaching and research in mechanical engineering',
-      postedTime: '2026-01-13',
-      relevanceScore: 93,
-      url: 'https://example.com/job/tokyo-mech',
-      source: 'university',
-      viewCount: 130,
-      applyCount: 25,
-      rating: 4.7,
-      expireTime: Date.now() + 30 * 24 * 60 * 60 * 1000 // 30 days expire
-    },
-    {
-      id: 8,
-      title: 'Environmental Science Assistant Professor',
-      company: 'National University of Singapore',
-      location: 'Singapore',
-      salary: 'Annual Salary: SGD 120,000-180,000',
-      type: 'professor',
-      deadline: '2026-06-15',
-      institution: 'National University of Singapore',
-      experience: '3-5 years',
-      degree: 'PhD',
-      skills: ['Environmental Science', 'Sustainability', 'Climate Change'],
-      description: 'Responsible for teaching and research in environmental science',
-      postedTime: '2026-01-12',
-      relevanceScore: 92,
-      url: 'https://example.com/job/nus-env',
-      source: 'university',
-      viewCount: 120,
-      applyCount: 22,
-      rating: 4.7,
-      expireTime: Date.now() + 30 * 24 * 60 * 60 * 1000 // 30 days expire
-    },
-  ],
-};
+// 移除模拟数据，使用真实的岗位抓取服务
 
 export default function UniversityPage() {
   const router = useRouter();
@@ -458,23 +100,45 @@ export default function UniversityPage() {
   const [sortBy, setSortBy] = useState('match');
   
   // AI抓取相关状态
-  const [jobs, setJobs] = useState<UniversityJob[]>(universityJobs[lang] as unknown as UniversityJob[]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [jobs, setJobs] = useState<UniversityJob[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [aiCallTriggered, setAiCallTriggered] = useState(false);
   
-  // 初始化：将模拟数据添加到持久化存储
+  // 初始化：使用真实的岗位抓取服务
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      // 先检查是否已有持久化数据
-      const hasPersistentData = localStorage.getItem('persistent_jobs');
-      if (!hasPersistentData) {
-        // 添加模拟数据到持久化存储
-        const { scrapeJobs } = require('@/lib/job-scraper');
-        // 添加模拟数据到持久化存储
-        const { addJobsToPersistentStorage } = require('@/lib/job-scraper');
-        addJobsToPersistentStorage(universityJobs[lang] as unknown as UniversityJob[]);
+    const fetchUniversityJobs = async () => {
+      try {
+        setIsLoading(true);
+        
+        // 使用真实的岗位抓取服务获取大学科研岗位
+        const fetchedJobs = await scrapeJobs({
+          keywords: ['university', 'research', 'professor', 'associate professor', 'postdoc', 'postdoctoral', 'research fellow', 'academic'],
+          degreeLevels: ['博士', 'PhD', 'Doctorate'],
+          maxResults: 20,
+          minRating: 4.0,
+          maxDuration: 10000
+        });
+        
+        // 将抓取的岗位转换为大学岗位格式
+        const formattedJobs = fetchedJobs.map(job => ({
+          ...job,
+          institution: job.company, // 将公司字段作为院校字段
+          type: job.title.toLowerCase().includes('教授') ? 'professor' : 
+                job.title.toLowerCase().includes('博士后') ? 'postdoc' : 
+                'researchAssistant'
+        })) as unknown as UniversityJob[];
+        
+        setJobs(formattedJobs);
+      } catch (error) {
+        console.error('获取大学岗位数据失败:', error);
+        // 如果抓取失败，使用空数组
+        setJobs([]);
+      } finally {
+        setIsLoading(false);
       }
-    }
+    };
+    
+    fetchUniversityJobs();
   }, [lang]);
   
   // 检查是否需要触发AI抓取
