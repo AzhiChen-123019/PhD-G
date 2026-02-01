@@ -1,7 +1,16 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { scrapeJobs, batchAnalyzeJobs } from '../../lib/ai-job-matching-complete';
+// 完全移除静态导入，只在运行时动态导入
+
+// 在运行时动态导入岗位匹配函数
+const loadJobMatching = async () => {
+  const jobMatchingModule = await import('../../lib/ai-job-matching-complete');
+  return {
+    scrapeJobs: jobMatchingModule.scrapeJobs,
+    batchAnalyzeJobs: jobMatchingModule.batchAnalyzeJobs
+  };
+};
 import { useRouter } from 'next/navigation';
 import { JobCard, OneClickMatchButton, JobStatsCard } from '../../components/JobUIComponents';
 import Header from '@/components/Header';
@@ -148,6 +157,9 @@ const PrivatePositionsPage: React.FC = () => {
     setIsFetching(true);
     
     try {
+      // 动态导入岗位匹配函数
+      const { scrapeJobs, batchAnalyzeJobs } = await loadJobMatching();
+      
       // 获取可匹配的公共岗位
       const matchableJobs = JobStorageManager.getMatchablePublicJobs(currentUserId);
       
