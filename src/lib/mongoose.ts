@@ -1,4 +1,11 @@
-import mongoose from 'mongoose';
+// 条件导入mongoose，避免构建时的错误
+let mongoose: any;
+try {
+  mongoose = require('mongoose');
+} catch (error) {
+  console.log('Mongoose not available in build environment');
+  mongoose = null;
+}
 
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/ctalents';
 
@@ -17,6 +24,12 @@ if (!cached) {
 }
 
 async function dbConnect() {
+  // 如果mongoose不可用（如在构建环境中），返回null
+  if (!mongoose) {
+    console.log('Mongoose not available, skipping database connection');
+    return null;
+  }
+
   if (cached.conn) {
     return cached.conn;
   }
@@ -31,8 +44,11 @@ async function dbConnect() {
       family: 4
     };
 
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
+    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose: any) => {
       return mongoose;
+    }).catch((error: any) => {
+      console.error('Database connection error:', error);
+      return null;
     });
   }
   cached.conn = await cached.promise;
@@ -40,3 +56,4 @@ async function dbConnect() {
 }
 
 export { dbConnect as connectToDB };
+export default dbConnect;
