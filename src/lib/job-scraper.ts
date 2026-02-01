@@ -126,7 +126,9 @@ const canScrapeNewJobs = (cacheKey: string): boolean => {
       const now = Date.now();
       const timeSinceLastScrape = (now - lastScrapeTime) / (1000 * 60);
       
-      return timeSinceLastScrape >= SHORT_CACHE_DURATION;
+      // 为了测试方便，暂时将缓存时间设置为1分钟
+      const testCacheDuration = 1;
+      return timeSinceLastScrape >= testCacheDuration;
     }
   } catch (error) {
     console.error('检查抓取时间失败:', error);
@@ -159,6 +161,46 @@ export const scrapeJobs = async (options: ScrapeOptions = {}): Promise<Job[]> =>
   // 检查是否可以抓取新岗位
   const canScrape = canScrapeNewJobs(cacheKey);
   
+  // 在服务器端环境中，直接抓取并返回岗位
+  if (typeof window === 'undefined') {
+    console.log('服务器端环境，直接抓取岗位');
+    
+    try {
+      // 使用真实的爬虫引擎抓取岗位
+      const platforms = options.platforms || ['LinkedIn', 'Glassdoor', 'Indeed', '51Job', '智联招聘', '猎聘'];
+      
+      // 调用真实的爬虫引擎
+      const crawlResult = await jobCrawler.crawlJobs({
+        keywords: options.keywords || [],
+        locations: options.locations || [],
+        maxResults: options.maxResults || 20,
+        minRating: options.minRating || 4.0,
+        platforms: platforms,
+        userProfile: options.userProfile
+      });
+      
+      const allJobs = crawlResult.jobs;
+
+      // 按相关度排序
+      allJobs.sort((a, b) => {
+        const scoreA = a.relevanceScore || 0;
+        const scoreB = b.relevanceScore || 0;
+        return scoreB - scoreA;
+      });
+
+      // 限制结果数量
+      const maxResults = options.maxResults || 10;
+      const limitedJobs = allJobs.slice(0, maxResults);
+      
+      console.log(`服务器端返回了 ${limitedJobs.length} 个岗位`);
+      return limitedJobs as Job[];
+    } catch (error) {
+      console.error('抓取岗位失败:', error);
+      throw error;
+    }
+  }
+  
+  // 客户端环境的处理逻辑
   if (canScrape) {
     console.log('开始抓取新岗位');
     
@@ -169,284 +211,23 @@ export const scrapeJobs = async (options: ScrapeOptions = {}): Promise<Job[]> =>
     const maxDuration = options.maxDuration || 10000;
     
     try {
-      // 模拟网络请求延迟
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      // 多平台岗位数据
+      // 使用真实的爬虫引擎抓取岗位
       const platforms = options.platforms || ['LinkedIn', 'Glassdoor', 'Indeed', '51Job', '智联招聘', '猎聘'];
-      const allJobs: Partial<Job>[] = [];
-
-      // 1. LinkedIn岗位
-      if (platforms.includes('LinkedIn')) {
-        allJobs.push(...[
-          {
-            id: `linkedin-${Date.now()}-1`,
-            title: '人工智能研究员',
-            company: '科技公司A',
-            location: '北京',
-            salary: '年薪50-70万',
-            type: '全职',
-            experience: '3-5年',
-            degree: '博士',
-            skills: ['Python', '机器学习', '深度学习', 'NLP', '计算机视觉'],
-            description: '负责公司核心AI技术研发，包括模型训练和优化，参与多个核心项目，推动AI技术在产品中的应用。',
-            postedTime: '2小时前',
-            relevanceScore: 95,
-            url: 'https://linkedin.com/job/1',
-            source: 'LinkedIn',
-            viewCount: 120,
-            applyCount: 25,
-            rating: 4.5
-          },
-          {
-            id: `linkedin-${Date.now()}-2`,
-            title: '算法研究员',
-            company: '互联网公司Z',
-            location: '杭州',
-            salary: '年薪60-80万',
-            type: '全职',
-            experience: '5-8年',
-            degree: '博士',
-            skills: ['Python', '算法设计', '机器学习', '分布式系统', '大数据'],
-            description: '负责核心算法的研发和优化，解决复杂的技术问题，推动业务发展。',
-            postedTime: '1小时前',
-            relevanceScore: 98,
-            url: 'https://linkedin.com/job/3',
-            source: 'LinkedIn',
-            viewCount: 150,
-            applyCount: 30,
-            rating: 4.8
-          }
-        ]);
-      }
-
-      // 2. Glassdoor岗位
-      if (platforms.includes('Glassdoor')) {
-        allJobs.push(...[
-          {
-            id: `glassdoor-${Date.now()}-1`,
-            title: '数据科学家',
-            company: '金融科技公司B',
-            location: '上海',
-            salary: '年薪40-60万',
-            type: '全职',
-            experience: '2-4年',
-            degree: '硕士及以上',
-            skills: ['Python', '统计分析', '数据可视化', 'SQL', '机器学习'],
-            description: '负责数据分析和建模，为业务决策提供支持，参与产品优化和业务创新。',
-            postedTime: '5小时前',
-            relevanceScore: 88,
-            url: 'https://glassdoor.com/job/2',
-            source: 'Glassdoor',
-            viewCount: 95,
-            applyCount: 18,
-            rating: 4.2
-          },
-          {
-            id: `glassdoor-${Date.now()}-2`,
-            title: '自然语言处理工程师',
-            company: '互联网公司F',
-            location: '上海',
-            salary: '年薪50-70万',
-            type: '全职',
-            experience: '3-5年',
-            degree: '硕士及以上',
-            skills: ['Python', 'NLP', '深度学习', 'transformers', '文本分析'],
-            description: '负责自然语言处理算法的研发和应用，参与智能客服、文本分析等产品的开发。',
-            postedTime: '1天前',
-            relevanceScore: 88,
-            url: 'https://glassdoor.com/job/1',
-            source: 'Glassdoor',
-            viewCount: 100,
-            applyCount: 20,
-            rating: 4.2
-          }
-        ]);
-      }
-
-      // 3. Indeed岗位
-      if (platforms.includes('Indeed')) {
-        allJobs.push(...[
-          {
-            id: `indeed-${Date.now()}-1`,
-            title: '机器学习工程师',
-            company: '人工智能公司D',
-            location: '杭州',
-            salary: '年薪55-75万',
-            type: '全职',
-            experience: '3-5年',
-            degree: '硕士及以上',
-            skills: ['Python', 'TensorFlow', 'PyTorch', '深度学习', '模型部署'],
-            description: '负责机器学习模型的设计、训练和部署，参与AI产品的研发和优化。',
-            postedTime: '3小时前',
-            relevanceScore: 90,
-            url: 'https://indeed.com/job/5',
-            source: 'Indeed',
-            viewCount: 110,
-            applyCount: 22,
-            rating: 4.4
-          },
-          {
-            id: `indeed-${Date.now()}-2`,
-            title: '大数据工程师',
-            company: '金融科技公司G',
-            location: '深圳',
-            salary: '年薪40-60万',
-            type: '全职',
-            experience: '3-5年',
-            degree: '硕士及以上',
-            skills: ['Python', 'Spark', 'Hadoop', 'SQL', '大数据处理'],
-            description: '负责大数据平台的构建和维护，参与数据处理和分析系统的开发。',
-            postedTime: '2天前',
-            relevanceScore: 82,
-            url: 'https://indeed.com/job/2',
-            source: 'Indeed',
-            viewCount: 90,
-            applyCount: 18,
-            rating: 4.0
-          }
-        ]);
-      }
-
-      // 4. 51Job岗位
-      if (platforms.includes('51Job')) {
-        allJobs.push(...[
-          {
-            id: `51job-${Date.now()}-1`,
-            title: '产业研究岗',
-            company: '四川省产业技术研究院',
-            location: '成都',
-            salary: '年薪30-50万',
-            type: '全职',
-            experience: '3-5年',
-            degree: '博士',
-            skills: ['产业研究', '技术创新', '项目管理', '数据分析', '政策研究'],
-            description: '负责产业技术研究，推动科技成果转化，参与重大项目规划和实施。',
-            postedTime: '1周前',
-            relevanceScore: 92,
-            url: 'https://jobs.51job.com/chengdu/170140178.html',
-            source: '51Job',
-            viewCount: 200,
-            applyCount: 45,
-            rating: 4.6
-          },
-          {
-            id: `51job-${Date.now()}-2`,
-            title: '人工智能算法工程师',
-            company: '科技公司E',
-            location: '北京',
-            salary: '年薪45-65万',
-            type: '全职',
-            experience: '2-4年',
-            degree: '硕士及以上',
-            skills: ['Python', '计算机视觉', '深度学习', 'OpenCV', '图像处理'],
-            description: '负责计算机视觉算法的研发和应用，参与产品的视觉相关功能开发。',
-            postedTime: '6小时前',
-            relevanceScore: 85,
-            url: 'https://jobs.51job.com/beijing/170140179.html',
-            source: '51Job',
-            viewCount: 85,
-            applyCount: 15,
-            rating: 4.1
-          }
-        ]);
-      }
-
-      // 5. 智联招聘岗位
-      if (platforms.includes('智联招聘')) {
-        allJobs.push(...[
-          {
-            id: `zhaopin-${Date.now()}-1`,
-            title: 'AI产品经理',
-            company: '科技公司H',
-            location: '北京',
-            salary: '年薪45-65万',
-            type: '全职',
-            experience: '3-5年',
-            degree: '硕士及以上',
-            skills: ['产品管理', 'AI产品', '用户研究', '数据分析', '项目管理'],
-            description: '负责AI产品的规划和管理，参与产品从概念到上线的全流程。',
-            postedTime: '4小时前',
-            relevanceScore: 80,
-            url: 'https://www.zhaopin.com/job/4',
-            source: '智联招聘',
-            viewCount: 120,
-            applyCount: 25,
-            rating: 4.1
-          }
-        ]);
-      }
-
-      // 6. 猎聘岗位
-      if (platforms.includes('猎聘')) {
-        allJobs.push(...[
-          {
-            id: `liepin-${Date.now()}-1`,
-            title: '区块链工程师',
-            company: '金融科技公司I',
-            location: '上海',
-            salary: '年薪50-70万',
-            type: '全职',
-            experience: '3-5年',
-            degree: '硕士及以上',
-            skills: ['Python', '区块链', '智能合约', '密码学', '分布式系统'],
-            description: '负责区块链技术的研发和应用，参与金融科技产品的开发。',
-            postedTime: '1天前',
-            relevanceScore: 78,
-            url: 'https://www.liepin.com/job/5',
-            source: '猎聘',
-            viewCount: 85,
-            applyCount: 15,
-            rating: 4.0
-          }
-        ]);
-      }
-
-      // 7. 远程工作岗位
-      if (options.includeRemote) {
-        allJobs.push(...[
-          {
-            id: `remote-${Date.now()}-1`,
-            title: '远程AI研究员',
-            company: '国际科技公司',
-            location: '远程',
-            salary: '年薪60-80万',
-            type: '全职',
-            experience: '3-5年',
-            degree: '博士',
-            skills: ['Python', '机器学习', '深度学习', 'NLP', '分布式系统'],
-            description: '远程工作，负责AI技术研发，参与国际项目合作。',
-            postedTime: '2天前',
-            relevanceScore: 95,
-            url: 'https://example.com/remote/job/1',
-            source: 'RemoteOK',
-            viewCount: 150,
-            applyCount: 35,
-            rating: 4.7
-          }
-        ]);
-      }
-
-      // 根据选项筛选岗位
-      let filteredJobs = [...allJobs];
-
-      // 筛选最低评分
-      const minRating = options.minRating || 4.0;
-      filteredJobs = filteredJobs.filter(job => job.rating !== undefined && job.rating >= minRating);
-
-      // 筛选薪资范围
-      if (options.salaryRange) {
-        const { min, max } = options.salaryRange;
-        filteredJobs = filteredJobs.filter(job => {
-          // 简化的薪资筛选逻辑
-          const salaryMatch = true;
-          // 实际项目中应该解析薪资字符串并进行比较
-          return salaryMatch;
-        });
-      }
+      
+      // 调用真实的爬虫引擎
+      const crawlResult = await jobCrawler.crawlJobs({
+        keywords: options.keywords || [],
+        locations: options.locations || [],
+        maxResults: options.maxResults || 20,
+        minRating: options.minRating || 4.0,
+        platforms: platforms,
+        userProfile: options.userProfile
+      });
+      
+      const allJobs = crawlResult.jobs;
 
       // 按相关度排序
-      filteredJobs.sort((a, b) => {
+      allJobs.sort((a, b) => {
         const scoreA = a.relevanceScore || 0;
         const scoreB = b.relevanceScore || 0;
         return scoreB - scoreA;
@@ -454,7 +235,7 @@ export const scrapeJobs = async (options: ScrapeOptions = {}): Promise<Job[]> =>
 
       // 限制结果数量
       const maxResults = options.maxResults || 10;
-      const limitedJobs = filteredJobs.slice(0, maxResults);
+      const limitedJobs = allJobs.slice(0, maxResults);
       
       // 检查抓取时长
       const elapsedTime = Date.now() - startTime;
