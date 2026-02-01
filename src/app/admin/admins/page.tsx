@@ -38,80 +38,13 @@ export default function AdminsPage() {
     const fetchAdmins = async () => {
       try {
         setLoading(true);
-        // 在真实环境中，这里应该调用API获取所有管理员
-        // 目前使用模拟数据
-        const mockAdmins: UserData[] = [
-          {
-            _id: 'admin-1',
-            username: 'admin1',
-            email: 'admin1@example.com',
-            nationality: '中国',
-            realName: '管理员1',
-            degreeVerified: true,
-            countryCode: '+86',
-            phone: '13800138001',
-            fileId: '1',
-            userType: 'individual',
-            role: 'admin',
-            isAdmin: true,
-            permissions: ['user_management', 'job_management'],
-            isEnterprise: false,
-            enterpriseName: '',
-            enterpriseIndustry: '',
-            enterpriseDescription: '',
-            enterpriseSize: '',
-            enterpriseWebsite: '',
-            enterpriseLogo: '',
-            contactPerson: '',
-            cooperationStatus: 'pending',
-            cooperationStartDate: null,
-            cooperationEndDate: null,
-            createdAt: new Date().toISOString(),
-            files: [],
-            education: {
-              highestDegree: '硕士',
-              graduationSchool: '清华大学',
-              graduationDate: '2020-06-30',
-              major: '计算机科学与技术'
-            }
-          },
-          {
-            _id: 'admin-2',
-            username: 'admin2',
-            email: 'admin2@example.com',
-            nationality: '中国',
-            realName: '管理员2',
-            degreeVerified: true,
-            countryCode: '+86',
-            phone: '13800138002',
-            fileId: '2',
-            userType: 'individual',
-            role: 'customer_service',
-            isAdmin: true,
-            permissions: [],
-            isEnterprise: false,
-            enterpriseName: '',
-            enterpriseIndustry: '',
-            enterpriseDescription: '',
-            enterpriseSize: '',
-            enterpriseWebsite: '',
-            enterpriseLogo: '',
-            contactPerson: '',
-            cooperationStatus: 'pending',
-            cooperationStartDate: null,
-            cooperationEndDate: null,
-            createdAt: new Date().toISOString(),
-            files: [],
-            education: {
-              highestDegree: '本科',
-              graduationSchool: '北京大学',
-              graduationDate: '2018-06-30',
-              major: '软件工程'
-            }
-          }
-        ];
         
-        setAdmins(mockAdmins);
+        // 在真实环境中，这里应该从数据库获取所有管理员
+        // 由于数据库连接问题，暂时使用空数组
+        // 在实际环境中，这里应该查询数据库
+        const admins: UserData[] = [];
+        
+        setAdmins(admins);
         setLoading(false);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
