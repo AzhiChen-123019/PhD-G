@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { JobManagementTabs, FavoritesPage, ApplicationsPage } from '../../components/AccountJobManagement';
-import { JobStorageManager } from '../../lib/job-storage';
-import { Job, JobFavorite, JobApplication } from '../../lib/job-model';
+import { JobManagementTabs, FavoritesPage, ApplicationsPage } from '@/components/AccountJobManagement';
+import { JobStorageManager } from '@/lib/job-storage';
+import { Job, JobFavorite, JobApplication } from '@/lib/job-model';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
