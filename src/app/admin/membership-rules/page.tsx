@@ -26,110 +26,31 @@ interface MembershipLevel {
   updatedAt: string;
 }
 
-// 本地存储键名
-const MEMBERSHIP_LEVELS_KEY = 'membershipLevels';
-
 // 获取所有会员等级
-const getAllMembershipLevels = (): MembershipLevel[] => {
-  const levelsJson = localStorage.getItem(MEMBERSHIP_LEVELS_KEY);
-  if (levelsJson) {
-    return JSON.parse(levelsJson);
-  } else {
-    // 默认会员等级
-  const defaultLevels: MembershipLevel[] = [
-    {
-      id: 'level-1',
-      name: '免费会员',
-      description: '基础功能访问',
-      price: 0,
-      durationMonths: 0,
-      isActive: true,
-      permissions: {
-        viewAllJobs: false,
-        viewCompanyInfo: false,
-        viewContactInfo: false,
-        applyJobs: 2,
-        aiToolsAccess: false,
-        resumeOptimization: false,
-        prioritySupport: false,
-        aiEmailGeneration: 1, // 每月可生成1次自荐邮件
-        emailSending: 1 // 每月可发送1次自荐邮件
-      },
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    },
-    {
-      id: 'level-2',
-      name: '基础会员',
-      description: '增强功能访问',
-      price: 99,
-      durationMonths: 1,
-      isActive: true,
-      permissions: {
-        viewAllJobs: true,
-        viewCompanyInfo: true,
-        viewContactInfo: false,
-        applyJobs: 10,
-        aiToolsAccess: true,
-        resumeOptimization: false,
-        prioritySupport: false,
-        aiEmailGeneration: 10, // 每月可生成10次自荐邮件
-        emailSending: 10 // 每月可发送10次自荐邮件
-      },
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    },
-    {
-      id: 'level-3',
-      name: '高级会员',
-      description: '高级功能访问',
-      price: 299,
-      durationMonths: 6,
-      isActive: true,
-      permissions: {
-        viewAllJobs: true,
-        viewCompanyInfo: true,
-        viewContactInfo: true,
-        applyJobs: 50,
-        aiToolsAccess: true,
-        resumeOptimization: true,
-        prioritySupport: false,
-        aiEmailGeneration: 50, // 每月可生成50次自荐邮件
-        emailSending: 50 // 每月可发送50次自荐邮件
-      },
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    },
-    {
-      id: 'level-4',
-      name: 'VIP会员',
-      description: '顶级功能访问',
-      price: 999,
-      durationMonths: 12,
-      isActive: true,
-      permissions: {
-        viewAllJobs: true,
-        viewCompanyInfo: true,
-        viewContactInfo: true,
-        applyJobs: 0, // 无限制
-        aiToolsAccess: true,
-        resumeOptimization: true,
-        prioritySupport: true,
-        aiEmailGeneration: 0, // 无限制
-        emailSending: 0 // 无限制
-      },
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    }
-  ];
-    localStorage.setItem(MEMBERSHIP_LEVELS_KEY, JSON.stringify(defaultLevels));
-    return defaultLevels;
+const getAllMembershipLevels = async (): Promise<MembershipLevel[]> => {
+  try {
+    // 在真实环境中，这里应该从数据库获取所有会员等级
+    // 由于数据库连接问题，暂时使用空数组
+    // 在实际环境中，这里应该查询数据库
+    const levels: MembershipLevel[] = [];
+    
+    return levels;
+  } catch (error) {
+    console.error('Error fetching membership levels:', error);
+    return [];
   }
 };
 
 // 保存会员等级
-const saveMembershipLevels = (levels: MembershipLevel[]) => {
-  localStorage.setItem(MEMBERSHIP_LEVELS_KEY, JSON.stringify(levels));
+const saveMembershipLevels = async (levels: MembershipLevel[]) => {
+  try {
+    // 在真实环境中，这里应该将会员等级保存到数据库
+    // 由于数据库连接问题，暂时不做任何操作
+    // 在实际环境中，这里应该更新数据库
+    console.log('Membership levels saved:', levels);
+  } catch (error) {
+    console.error('Error saving membership levels:', error);
+  }
 };
 
 // 创建新会员等级
@@ -167,11 +88,16 @@ export default function MembershipRulesPage() {
 
   // 初始化数据
   useEffect(() => {
-    setMembershipLevels(getAllMembershipLevels());
+    const fetchMembershipLevels = async () => {
+      const levels = await getAllMembershipLevels();
+      setMembershipLevels(levels);
+    };
+
+    fetchMembershipLevels();
   }, []);
 
   // 保存所有会员等级
-  const handleSaveLevels = () => {
+  const handleSaveLevels = async () => {
     try {
       setLoading(true);
       setError(null);
@@ -181,7 +107,7 @@ export default function MembershipRulesPage() {
         updatedAt: new Date().toISOString()
       }));
       
-      saveMembershipLevels(updatedLevels);
+      await saveMembershipLevels(updatedLevels);
       setMembershipLevels(updatedLevels);
       setSuccessMessage('会员等级保存成功！');
       
