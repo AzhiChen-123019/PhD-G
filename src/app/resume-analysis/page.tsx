@@ -32,8 +32,82 @@ const ResumeAnalysisPage: React.FC = () => {
     industry: []
   });
 
-  // 根据简历文件名生成个性化的分析报告
-  const generatePersonalizedReport = (resumeInfo: any, userName: string) => {
+  // 使用真实的OpenAI API分析简历
+  const analyzeResumeWithOpenAI = async (resumeInfo: any, userName: string) => {
+    try {
+      console.log('开始使用OpenAI分析简历');
+      
+      // 导入AI服务
+      const { callOpenAI, AIPromptType } = await import('@/lib/ai-service');
+      
+      // 生成简历分析提示词
+      const prompt = `请详细分析以下简历信息，并生成一份专业的简历分析报告：
+
+简历信息：
+${JSON.stringify(resumeInfo || {}, null, 2)}
+
+用户姓名：${userName || '博士求职者'}
+
+请从以下几个方面进行分析：
+1. 基本信息提取（姓名、学历、专业、工作经验等）
+2. 技能评估（核心技能、次要技能、软技能）
+3. 优势分析
+4. 改进建议
+5. 岗位推荐
+6. 简历综合评分（0-100）
+
+请以JSON格式输出分析结果，包含以下字段：
+- basicInfo: { name, education, major, experience, fileName, uploadDate }
+- analysis: {
+    skills: { primary: [], secondary: [], soft: [] },
+    strengths: [],
+    improvement: [],
+    matchScore: number
+  }
+- recommendations: []
+`;
+      
+      // 调用OpenAI API
+      const response = await callOpenAI(prompt, 'gpt-4o-mini', {
+        temperature: 0.3,
+        maxTokens: 2000,
+        topP: 0.8
+      });
+      
+      if (response.success && response.data) {
+        console.log('OpenAI API调用成功，响应数据:', response);
+        
+        // 解析AI返回的JSON数据
+        try {
+          const analysisResult = JSON.parse(response.data);
+          
+          // 保存token使用情况，用于成本分析
+          if (response.tokenUsage) {
+            console.log('OpenAI API Token使用情况:', response.tokenUsage);
+            // 可以将token使用情况存储到localStorage或数据库中
+            localStorage.setItem('lastTokenUsage', JSON.stringify(response.tokenUsage));
+          }
+          
+          return analysisResult;
+        } catch (parseError) {
+          console.error('解析AI响应失败:', parseError);
+          // 如果解析失败，返回默认分析结果
+          return generateDefaultReport(resumeInfo, userName);
+        }
+      } else {
+        console.error('OpenAI API调用失败:', response.error);
+        // 如果API调用失败，返回默认分析结果
+        return generateDefaultReport(resumeInfo, userName);
+      }
+    } catch (error) {
+      console.error('使用OpenAI分析简历时发生错误:', error);
+      // 如果发生错误，返回默认分析结果
+      return generateDefaultReport(resumeInfo, userName);
+    }
+  };
+
+  // 生成默认的简历分析报告（当OpenAI API调用失败时使用）
+  const generateDefaultReport = (resumeInfo: any, userName: string) => {
     // 基于文件名生成不同的分析数据
     const fileName = resumeInfo?.fileName || '';
     const uploadDate = resumeInfo?.uploadDate || new Date().toISOString().split('T')[0];
@@ -151,60 +225,70 @@ const ResumeAnalysisPage: React.FC = () => {
 
   // 在客户端渲染后，从localStorage获取语言设置和用户信息
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      // 获取语言设置
-      const savedLang = localStorage.getItem('lang');
-      if (savedLang === 'zh' || savedLang === 'en') {
-        setLang(savedLang);
-      }
+    const loadResumeAnalysis = async () => {
+      if (typeof window !== 'undefined') {
+        // 获取语言设置
+        const savedLang = localStorage.getItem('lang');
+        if (savedLang === 'zh' || savedLang === 'en') {
+          setLang(savedLang);
+        }
 
-      // 获取用户信息
-      const storedUser = localStorage.getItem('user');
-      let user = null;
-      if (storedUser) {
-        user = JSON.parse(storedUser);
-        setIsLoggedIn(true);
-        setUserName(user.username || 'User');
-      }
-      
-      // 获取最新的上传记录
-      const uploadRecords = JSON.parse(localStorage.getItem('uploadRecords') || '[]');
-      console.log('Upload records:', uploadRecords);
-      
-      // 按上传时间排序，获取最新的简历
-      let latestUpload = null;
-      if (uploadRecords.length > 0) {
-        // 尝试按上传时间排序，如果失败则按ID排序
+        // 获取用户信息
+        const storedUser = localStorage.getItem('user');
+        let user: any = null;
+        if (storedUser) {
+          user = JSON.parse(storedUser);
+          setIsLoggedIn(true);
+          setUserName(user.username || 'User');
+        }
+        
+        // 获取最新的上传记录
+        const uploadRecords = JSON.parse(localStorage.getItem('uploadRecords') || '[]');
+        console.log('Upload records:', uploadRecords);
+        
+        // 按上传时间排序，获取最新的简历
+        let latestUpload = null;
+        if (uploadRecords.length > 0) {
+          // 尝试按上传时间排序，如果失败则按ID排序
+          try {
+            latestUpload = [...uploadRecords].sort((a, b) => {
+              const timeA = a.uploadTime ? new Date(a.uploadTime).getTime() : 0;
+              const timeB = b.uploadTime ? new Date(b.uploadTime).getTime() : 0;
+              return timeB - timeA;
+            })[0];
+          } catch (error) {
+            console.error('Error sorting upload records by time:', error);
+            // 如果时间排序失败，按ID排序
+            latestUpload = [...uploadRecords].sort((a, b) => {
+              const idA = a.id ? parseInt(a.id) : 0;
+              const idB = b.id ? parseInt(b.id) : 0;
+              return idB - idA;
+            })[0];
+          }
+        }
+        console.log('Latest upload:', latestUpload);
+        
+        // 获取用户简历信息
+        const userResume = user?.resume || latestUpload;
+        console.log('User resume:', userResume);
+
         try {
-          latestUpload = [...uploadRecords].sort((a, b) => {
-            const timeA = a.uploadTime ? new Date(a.uploadTime).getTime() : 0;
-            const timeB = b.uploadTime ? new Date(b.uploadTime).getTime() : 0;
-            return timeB - timeA;
-          })[0];
+          // 使用真实的OpenAI API分析简历
+          const analysisResult = await analyzeResumeWithOpenAI(userResume, user?.username || 'User');
+          console.log('OpenAI分析结果:', analysisResult);
+          setResumeData(analysisResult);
         } catch (error) {
-          console.error('Error sorting upload records by time:', error);
-          // 如果时间排序失败，按ID排序
-          latestUpload = [...uploadRecords].sort((a, b) => {
-            const idA = a.id ? parseInt(a.id) : 0;
-            const idB = b.id ? parseInt(b.id) : 0;
-            return idB - idA;
-          })[0];
+          console.error('分析简历失败:', error);
+          // 如果分析失败，使用默认数据
+          const defaultData = generateDefaultReport(userResume, user?.username || 'User');
+          setResumeData(defaultData);
+        } finally {
+          setIsLoading(false);
         }
       }
-      console.log('Latest upload:', latestUpload);
-      
-      // 获取用户简历信息
-      const userResume = user?.resume || latestUpload;
-      console.log('User resume:', userResume);
+    };
 
-      // 生成个性化简历分析数据
-      setTimeout(() => {
-        const personalizedData = generatePersonalizedReport(userResume, user?.username || 'User');
-        console.log('Generated report data:', personalizedData);
-        setResumeData(personalizedData);
-        setIsLoading(false);
-      }, 1000);
-    }
+    loadResumeAnalysis();
   }, []);
 
   const translations = {
