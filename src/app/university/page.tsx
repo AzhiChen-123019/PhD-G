@@ -99,28 +99,27 @@ export default function UniversityPage() {
   const [selectedSalary, setSelectedSalary] = useState('all');
   const [sortBy, setSortBy] = useState('match');
   
-  // AI抓取相关状态
+  // 岗位数据状态
   const [jobs, setJobs] = useState<UniversityJob[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [aiCallTriggered, setAiCallTriggered] = useState(false);
   
-  // 初始化：使用真实的岗位抓取服务
+  // 初始化：从API获取真实岗位数据
   useEffect(() => {
     const fetchUniversityJobs = async () => {
       try {
         setIsLoading(true);
         
-        // 使用真实的岗位抓取服务获取大学科研岗位
-        const fetchedJobs = await scrapeJobs({
-          keywords: ['university', 'research', 'professor', 'associate professor', 'postdoc', 'postdoctoral', 'research fellow', 'academic'],
-          degreeLevels: ['博士', 'PhD', 'Doctorate'],
-          maxResults: 20,
-          minRating: 4.0,
-          maxDuration: 10000
-        });
+        // 从API获取大学科研岗位数据
+        const response = await fetch('/api/jobs?category=university');
+        if (!response.ok) {
+          throw new Error('Failed to fetch university jobs');
+        }
         
-        // 将抓取的岗位转换为大学岗位格式
-        const formattedJobs = fetchedJobs.map(job => ({
+        const data = await response.json();
+        const universityJobs = data.jobs || [];
+        
+        // 将岗位转换为大学岗位格式
+        const formattedJobs = universityJobs.map((job: any) => ({
           ...job,
           institution: job.company, // 将公司字段作为院校字段
           type: job.title.toLowerCase().includes('教授') ? 'professor' : 
@@ -131,7 +130,7 @@ export default function UniversityPage() {
         setJobs(formattedJobs);
       } catch (error) {
         console.error('获取大学岗位数据失败:', error);
-        // 如果抓取失败，使用空数组
+        // 如果API调用失败，使用空数组
         setJobs([]);
       } finally {
         setIsLoading(false);
@@ -141,59 +140,7 @@ export default function UniversityPage() {
     fetchUniversityJobs();
   }, [lang]);
   
-  // 检查是否需要触发AI抓取
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const triggerAICall = localStorage.getItem('triggerAICall');
-      if (triggerAICall) {
-        const { type, timestamp } = JSON.parse(triggerAICall);
-        // 只处理大学科研岗位的AI调用
-        if (type === 'university' && Date.now() - timestamp < 5000) {
-          // 5秒内的调用才有效
-          setAiCallTriggered(true);
-          // 清除触发标志
-          localStorage.removeItem('triggerAICall');
-        }
-      }
-    }
-  }, []);
-  
-  // 触发AI抓取
-  useEffect(() => {
-    if (aiCallTriggered) {
-      const fetchJobsWithAI = async () => {
-        setIsLoading(true);
-        try {
-          // 调用AI驱动的岗位抓取服务，抓取全球范围内的大学相关岗位
-          const scrapedJobs = await scrapeJobs({
-            keywords: ['university', 'research', 'professor', 'associate professor', 'postdoc', 'postdoctoral', 'research fellow', 'academic'],
-            degreeLevels: ['博士', 'PhD', 'Doctorate'],
-            maxResults: 15, // 大学岗位：10-20个/次
-            minRating: 4.0,
-            maxDuration: 8000 // 8秒超时（用户主动触发：5-10秒）
-          });
-          
-          // 将抓取的岗位转换为大学岗位格式
-          const formattedJobs = scrapedJobs.map(job => ({
-            ...job,
-            institution: job.company, // 将公司字段作为院校字段
-            type: job.title.toLowerCase().includes('教授') ? 'professor' : 
-                  job.title.toLowerCase().includes('博士后') ? 'postdoc' : 
-                  'researchAssistant'
-          })) as unknown as UniversityJob[];
-          
-          // 更新岗位数据，合并现有数据和新抓取数据
-          setJobs(prevJobs => [...formattedJobs, ...prevJobs]);
-        } catch (error) {
-          console.error('AI岗位抓取失败:', error);
-        } finally {
-          setIsLoading(false);
-        }
-      };
-      
-      fetchJobsWithAI();
-    }
-  }, [aiCallTriggered, lang]);
+
   
   // 筛选条件选项
   const fields = {
