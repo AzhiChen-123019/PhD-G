@@ -493,7 +493,11 @@ ${JSON.stringify(userProfile, null, 2)}
     const { default: jobCrawler } = await import('./job-crawler');
 
     // 执行抓取
-    const crawlResult = await jobCrawler.crawlJobs(crawlOptions);
+    const crawlResult = await jobCrawler.crawlJobs({
+      ...crawlOptions,
+      keywords: crawlOptions.keywords || [],
+      locations: crawlOptions.locations || []
+    });
 
     // 执行匹配
     return this.matchJobs(crawlResult.jobs, userProfile, matchOptions);
