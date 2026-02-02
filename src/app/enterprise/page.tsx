@@ -6,12 +6,12 @@ import JobCard from '@/components/JobCard';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import PageTitle from '@/components/PageTitle';
-import { intelligentJobScrape, AIEnhancedJob, AIScrapeOptions } from '@/lib/ai-integration';
+
 import { scrapeJobs } from '@/lib/job-scraper';
 import { Job } from '@/lib/job-model';
 
 // 扩展Job接口以兼容企业岗位数据结构
-interface EnterpriseJob extends AIEnhancedJob {
+interface EnterpriseJob extends Job {
   // 企业岗位可能需要的额外字段
   expireTime?: number;
 }
@@ -118,37 +118,27 @@ export default function EnterprisePage() {
   const [selectedType, setSelectedType] = useState('all');
   const [sortBy, setSortBy] = useState('match');
   
-  // AI抓取相关状态
+  // 岗位数据状态
   const [jobs, setJobs] = useState<EnterpriseJob[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [aiCallTriggered, setAiCallTriggered] = useState(false);
-  const [aiAnalysisEnabled, setAiAnalysisEnabled] = useState(true);
   
-  // 初始化：使用真实的岗位抓取服务
+  // 初始化：从API获取真实岗位数据
   useEffect(() => {
     const fetchEnterpriseJobs = async () => {
       try {
         setIsLoading(true);
         
-        // 调用AI驱动的岗位抓取服务，获取企业高级岗位
-        const aiScrapeOptions: AIScrapeOptions = {
-          keywords: ['technical director', 'chief scientist', 'R&D manager', 'research director', 'senior engineer', 'CTO', 'VP of Engineering', 'engineering manager'],
-          degreeLevels: ['博士', 'PhD', 'Doctorate', '硕士', 'Master'],
-          maxResults: 25,
-          minRating: 4.0,
-          maxDuration: 12000,
-          platforms: ['LinkedIn', 'Glassdoor', 'Indeed', '51Job', '智联招聘', '猎聘'],
-          useAI: true,
-          analysisDepth: 'comprehensive',
-          includeSalaryAnalysis: true,
-          includeSkillsAnalysis: true,
-          includeCompanyAnalysis: true
-        };
-
-        const scrapedJobs = await intelligentJobScrape(aiScrapeOptions);
+        // 从API获取企业高级岗位数据
+        const response = await fetch('/api/jobs?category=enterprise');
+        if (!response.ok) {
+          throw new Error('Failed to fetch enterprise jobs');
+        }
         
-        // 将抓取的岗位转换为企业岗位格式
-        const formattedJobs = scrapedJobs.map(job => ({
+        const data = await response.json();
+        const enterpriseJobs = data.jobs || [];
+        
+        // 将岗位转换为企业岗位格式
+        const formattedJobs = enterpriseJobs.map((job: any) => ({
           ...job,
           type: job.title.toLowerCase().includes('总监') ? 'techDirector' : 
                 job.title.toLowerCase().includes('首席') ? 'chiefScientist' : 
@@ -160,7 +150,7 @@ export default function EnterprisePage() {
         setJobs(formattedJobs);
       } catch (error) {
         console.error('获取企业岗位数据失败:', error);
-        // 如果抓取失败，使用空数组
+        // 如果API调用失败，使用空数组
         setJobs([]);
       } finally {
         setIsLoading(false);
@@ -170,68 +160,7 @@ export default function EnterprisePage() {
     fetchEnterpriseJobs();
   }, [lang]);
   
-  // 检查是否需要触发AI抓取
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const triggerAICall = localStorage.getItem('triggerAICall');
-      if (triggerAICall) {
-        const { type, timestamp } = JSON.parse(triggerAICall);
-        // 只处理企业高级岗位的AI调用
-        if (type === 'enterprise' && Date.now() - timestamp < 5000) {
-          // 5秒内的调用才有效
-          setAiCallTriggered(true);
-          // 清除触发标志
-          localStorage.removeItem('triggerAICall');
-        }
-      }
-    }
-  }, []);
-  
-  // 触发AI抓取
-  useEffect(() => {
-    if (aiCallTriggered) {
-      const fetchJobsWithAI = async () => {
-        setIsLoading(true);
-        try {
-          // 调用AI驱动的岗位抓取服务，抓取全球范围内的企业相关高级岗位
-          const aiScrapeOptions: AIScrapeOptions = {
-            keywords: ['technical director', 'chief scientist', 'R&D manager', 'research director', 'senior engineer', 'CTO', 'VP of Engineering', 'engineering manager'],
-            degreeLevels: ['博士', 'PhD', 'Doctorate', '硕士', 'Master'],
-            maxResults: 25, // 企业岗位：15-30个/次
-            minRating: 4.0,
-            maxDuration: 10000, // 10秒超时（用户主动触发：5-10秒）
-            platforms: ['LinkedIn', 'Glassdoor', 'Indeed', '51Job', '智联招聘', '猎聘'],
-            useAI: true,
-            analysisDepth: 'comprehensive',
-            includeSalaryAnalysis: true,
-            includeSkillsAnalysis: true,
-            includeCompanyAnalysis: true
-          };
 
-          const scrapedJobs = await intelligentJobScrape(aiScrapeOptions);
-          
-          // 将抓取的岗位转换为企业岗位格式
-          const formattedJobs = scrapedJobs.map(job => ({
-            ...job,
-            type: job.title.toLowerCase().includes('总监') ? 'techDirector' : 
-                  job.title.toLowerCase().includes('首席') ? 'chiefScientist' : 
-                  job.title.toLowerCase().includes('经理') ? 'rManager' : 
-                  'techDirector',
-            deadline: job.deadline || (job.expireTime ? new Date(job.expireTime).toISOString().split('T')[0] : '')
-          })) as unknown as EnterpriseJob[];
-          
-          // 更新岗位数据，合并现有数据和新抓取数据
-          setJobs(prevJobs => [...formattedJobs, ...prevJobs]);
-        } catch (error) {
-          console.error('AI岗位抓取失败:', error);
-        } finally {
-          setIsLoading(false);
-        }
-      };
-      
-      fetchJobsWithAI();
-    }
-  }, [aiCallTriggered, lang]);
   
   // 筛选条件选项
   const industries = {
